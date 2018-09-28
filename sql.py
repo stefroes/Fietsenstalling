@@ -27,3 +27,5 @@ result = cursor.fetchall()
 for i in result:
     print(i)
 
+
+
