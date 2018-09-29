@@ -11,6 +11,12 @@ import mysql.connector
 # username: fietsen_user
 # password: QYm6Pt3Cv4cDNynT
 
+Voornaam = str(input("Vul hier uw voornaam in: "))
+Tussenvoegsels = str(input("Vul hier uw tussenvoegsels in: "))
+Achternaam = str(input("Vul hier uw achternaam in: "))
+Postcode = str(input("Vul hier uw postcode in:"))
+Huisnummer = str(input("Vul hier uw huisnummer in: "))
+Email = str(input("Vul hier uw Email in: "))
 
 db = mysql.connector.connect(
     host='37.97.240.38',
@@ -22,20 +28,8 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 cursor.execute(
-    "INSERT INTO user(voornaam) VALUES('laurens')"
-    "INSERT INTO user(tussenvoegsels) Values('van de')"
-    "INSERT INTO user(achternaam) VALUES('Hulst')"
-    "INSERT INTO user(postcode) VALUES('7313BR')"
-    "INSERT INTO user(huisnummer) VALUES('15')"
-    "INSERT INTO user(email) VALUES('laurensvandehulst@gmail.com')"
+    "INSERT INTO user(Voornaam, Tussenvoegsels, Achternaam, Postcode, Huisnummer, Email) VALUES("+Voornaam+", "+Tussenvoegsels+", "+Achternaam+", "+Postcode+", "+Huisnummer+", "+Email+")"
 )
 db.commit()
 db.close()
 
-# ben wezen zoeken naar iets om dit:
-#FirstName = str(input("Vul hier uw voornaam in: "))
-#LastName = str(input("Vul hier uw achternaam in: "))
-#Adress = (input("Vul hier uw postcode in: "))
-#Huisnummer = eval(input("Vul hier uw huisnummer in:"))
-#Email = str(input("Vul hier uw email in: "))
-#in te linken aan de waarden bij "cursor.execute() maar krijg het niet voor elkaar. Misschien kan een van jullie het?
