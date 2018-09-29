@@ -24,6 +24,4 @@ cursor.execute('SELECT name FROM user')
 
 result = cursor.fetchall()
 
-for i in result:
-    print(i)
-
+print(result)
