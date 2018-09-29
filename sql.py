@@ -1,5 +1,6 @@
 import mysql.connector
 
+
 # --- MYSQL INSTALLEREN
 # GA NAAR FILE -> SETTINGS -> PROJECT -> PROJECT INTERPRETER -> KLIK RECHTS OP HET PLUS ICON
 # ZOEK NAAR 'mysql-connector', KIES DEZE EN KLIK OP 'Install Package'
@@ -20,8 +21,10 @@ db = mysql.connector.connect(
 
 cursor = db.cursor()
 
-cursor.execute('SELECT name FROM user')
+cursor.execute("INSERT INTO user(name) VALUES('laurens');")
 
-result = cursor.fetchall()
+db.commit()
+db.close()
 
-print(result)
+
+
