@@ -11,12 +11,13 @@ import mysql.connector
 # username: fietsen_user
 # password: QYm6Pt3Cv4cDNynT
 
-Voornaam = str(input("Vul hier uw voornaam in: "))
-Tussenvoegsels = str(input("Vul hier uw tussenvoegsels in: "))
-Achternaam = str(input("Vul hier uw achternaam in: "))
-Postcode = str(input("Vul hier uw postcode in:"))
-Huisnummer = str(input("Vul hier uw huisnummer in: "))
-Email = str(input("Vul hier uw Email in: "))
+
+first_name = input('Vul hier uw voornaam in: ')
+insertion = input('Vul hier uw tussenvoegsels in: ')
+last_name = input('Vul hier uw achternaam in: ')
+zip = input('Vul hier uw postcode in: ')
+number = input('Vul hier uw huisnummer in: ')
+email = input('Vul hier uw e-mail in: ')
 
 db = mysql.connector.connect(
     host='37.97.240.38',
@@ -26,10 +27,9 @@ db = mysql.connector.connect(
 )
 
 cursor = db.cursor()
-
-cursor.execute(
-    "INSERT INTO user(Voornaam, Tussenvoegsels, Achternaam, Postcode, Huisnummer, Email) VALUES("+Voornaam+", "+Tussenvoegsels+", "+Achternaam+", "+Postcode+", "+Huisnummer+", "+Email+")"
-)
+cursor.execute('INSERT INTO user(first_name, insertion, last_name, zip, number, email) VALUES(%s, %s, %s, %s, %s, %s)', (first_name, insertion, last_name, zip, number, email))
 db.commit()
-db.close()
 
+print(cursor.rowcount, 'record inserted.')
+
+db.close()
