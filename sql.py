@@ -12,10 +12,10 @@ import mysql.connector
 # password: QYm6Pt3Cv4cDNynT
 print("Welkom bij de NS - fietsenstalling.\n")
 
-new_customer = input('Heeft u al een account bij de NS-fietsenstalling? Type ja of nee: ')
+new_customer = input('Heeft u al een account bij de NS-fietsenstalling? Type ja of nee: ').lower()
 
-if new_customer == 'nee' or 'Nee':
-    print('\nOm uw fiets te kunnen stallen in de NS-fietsenstalling dient u eerst een account aan te maken.\n')
+if new_customer == 'nee':
+    print('\nOm uw fiets te kunnen stallen in de NS-fietsenstalling dient u eerst een account aan te maken. Volg alstublieft de volgende stappen:\n')
     first_name = input('Vul hier uw voornaam in: ').capitalize()
     insertion = input('Vul hier uw tussenvoegsels in: ')
     last_name = input('Vul hier uw achternaam in: ').capitalize()
@@ -38,8 +38,10 @@ db.commit()
 
 print(cursor.rowcount, 'record inserted.\n')
 
-if cursor.rowcount == 1:
-    print("Om uw fiets te kunnen stallen, dient u eerst in te loggen. Volg alstublieft de volgende stappen:\n")
+
+
+
+
 
 db.close()
 
