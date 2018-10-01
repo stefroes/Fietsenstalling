@@ -12,12 +12,12 @@ import mysql.connector
 # password: QYm6Pt3Cv4cDNynT
 
 
-first_name = input('Vul hier uw voornaam in: ')
+first_name = input('Vul hier uw voornaam in: ').capitalize()
 insertion = input('Vul hier uw tussenvoegsels in: ')
-last_name = input('Vul hier uw achternaam in: ')
-zip = input('Vul hier uw postcode in: ')
+last_name = input('Vul hier uw achternaam in: ').capitalize()
+zip = input('Vul hier uw postcode in: ').replace(' ', '').upper()
 number = input('Vul hier uw huisnummer in: ')
-email = input('Vul hier uw e-mail in: ')
+email = input('Vul hier uw e-mail in: ').lower()
 
 db = mysql.connector.connect(
     host='37.97.240.38',
