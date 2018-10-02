@@ -1,23 +1,6 @@
-# Registratie voor nieuwe gebruikers
-# Input veld: Voor + achternaam
-# Input veld: Postcode + huisnummer
-# “Huidige datum”
-# Input veld: Email
-# Input veld: wachtwoord
-# Input veld: wachtwoord (controle)
-# Pincode (4 cijfers)
-# Captcha
-# label uitprinten voor op je fiets(dit is je unieke code)
-#
-# Inlogsysteem voor al bestaande gebruikers
-# Input veld: Email
-# Input veld: Wachtwoord
-# Knop fiets ophalen, wegzetten of informatie opvragen.
-
 # Registratie
 
 import datetime
-import re
 
 voornaam = input('Voornaam : ')
 achternaam = input('Achternaam : ')
@@ -34,7 +17,8 @@ email = str(input('Email: '))
 
 import re
 
-def wachtwoord():
+goed_wachtwoord = ''
+def wachtwoord(wachtwoord):
     while True:
         wachtwoord = input("Wachtwoord (Minmaal 8 karakters, 1 hoofdletter en 1 cijfer): ")
         if len(wachtwoord) < 8:
@@ -44,22 +28,22 @@ def wachtwoord():
         elif re.search('[A-Z]',wachtwoord) is None:
             print("Wachtwoord moet minimaal 1 hoofdletter bevatten.")
         else:
+            return wachtwoord
             print("Wachtwoord voldoet aan voorwaarden.")
             break
-        return str(wachtwoord)
-wachtwoord()
+goed_wachtwoord = wachtwoord(goed_wachtwoord)
+
 # wachtwoord_check = str(input('Herhaal wachtwoord: '))
 def wachtwoord_check():
     while True:
-        if wachtwoord_check != wachtwoord():
+        wachtwoord_check = input('Herhaal wachtwoord: ')
+        if wachtwoord_check != goed_wachtwoord:
             print("Dit moet gelijk zijn aan je wachtwoord.")
         else:
             print("Wachtwoord is set")
             break
 
 wachtwoord_check()
-# if wachtwoord_check != wachtwoord:
-#     print()
 
 pincode = input('4 cijferige pincode: ')
 
@@ -74,7 +58,7 @@ pincode = input('4 cijferige pincode: ')
 # Knop fiets ophalen, wegzetten of informatie opvragen.
 
 
-registratie = [voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, email, wachtwoord, pincode]
+registratie = [voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, email, goed_wachtwoord, pincode]
 
 print(registratie)
 
