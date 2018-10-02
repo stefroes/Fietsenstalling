@@ -1,5 +1,6 @@
 import mysql.connector
 
+
 # --- MYSQL INSTALLEREN
 # GA NAAR FILE -> SETTINGS -> PROJECT -> PROJECT INTERPRETER -> KLIK RECHTS OP HET PLUS ICON
 # ZOEK NAAR 'mysql-connector', KIES DEZE EN KLIK OP 'Install Package'
@@ -9,6 +10,19 @@ import mysql.connector
 # https://roeswebdesign.nl:8443/domains/databases/phpMyAdmin/
 # username: fietsen_user
 # password: QYm6Pt3Cv4cDNynT
+print("Welkom bij de NS - fietsenstalling.\n")
+
+new_customer = input('Heeft u al een account bij de NS-fietsenstalling? Type ja of nee: ').lower()
+
+if new_customer == 'nee':
+    print('\nOm uw fiets te kunnen stallen in de NS-fietsenstalling dient u eerst een account aan te maken. Volg alstublieft de volgende stappen:\n')
+    first_name = input('Vul hier uw voornaam in: ').capitalize()
+    insertion = input('Vul hier uw tussenvoegsels in: ')
+    last_name = input('Vul hier uw achternaam in: ').capitalize()
+    zip = input('Vul hier uw postcode in: ').replace(' ', '').upper()
+    number = input('Vul hier uw huisnummer in: ')
+    email = input('Vul hier uw e-mail in: ').lower()
+
 
 
 db = mysql.connector.connect(
@@ -19,9 +33,15 @@ db = mysql.connector.connect(
 )
 
 cursor = db.cursor()
+cursor.execute('INSERT INTO user(first_name, insertion, last_name, zip, number, email) VALUES(%s, %s, %s, %s, %s, %s)', (first_name, insertion, last_name, zip, number, email))
+db.commit()
 
-cursor.execute('SELECT name FROM user')
+print(cursor.rowcount, 'record inserted.\n')
 
-result = cursor.fetchall()
 
-print(result)
+
+
+
+
+db.close()
+
