@@ -61,6 +61,3 @@ pincode = input('4 cijferige pincode: ')
 registratie = [voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, email, goed_wachtwoord, pincode]
 
 print(registratie)
-
-
-
