@@ -63,3 +63,4 @@ registratie = [voornaam, achternaam, postcode, huisnummer, datum_datum, datum_ti
 print(registratie)
 
 
+
