@@ -18,9 +18,9 @@ goed_email = ''
 def email(email):
     while True:
         email = str(input('Email: '))
-        if re.search('[@]',email) is None:
+        if re.search('[@]', email) is None:
             print("Voer een geldig email adres in.")
-        elif re.search('[.]',email) is None:
+        elif re.search('[.]', email) is None:
             print("Voer een geldig email adres in.")
         else:
             return email
@@ -36,9 +36,9 @@ def wachtwoord(wachtwoord):
         wachtwoord = input("Wachtwoord (Minmaal 8 karakters, 1 hoofdletter en 1 cijfer): ")
         if len(wachtwoord) < 8:
             print("Wachtwoord moet minimaal 8 karakters bevatten.")
-        elif re.search('[0-9]',wachtwoord) is None:
+        elif re.search('[0-9]', wachtwoord) is None:
             print("Wachtwoord moet minimaal 1 cijfer bevatten.")
-        elif re.search('[A-Z]',wachtwoord) is None:
+        elif re.search('[A-Z]', wachtwoord) is None:
             print("Wachtwoord moet minimaal 1 hoofdletter bevatten.")
         else:
             return wachtwoord
@@ -82,6 +82,7 @@ goed_pincode = pincode(goed_pincode)
 # Knop fiets ophalen, wegzetten of informatie opvragen.
 
 
-registratie =[voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, goed_email, goed_wachtwoord, goed_pincode]
+registratie = [voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, goed_email, goed_wachtwoord,
+              goed_pincode]
 
 print(registratie)
