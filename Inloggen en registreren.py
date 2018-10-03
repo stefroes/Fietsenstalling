@@ -1,6 +1,7 @@
 # Registratie
 
 import datetime
+import re
 
 voornaam = input('Voornaam : ')
 achternaam = input('Achternaam : ')
@@ -13,9 +14,21 @@ datum_vandaag = datum[:19]
 datum_datum = datum[:10]
 datum_tijd = datum[11:19]
 
-email = str(input('Email: '))
+goed_email = ''
+def email(email):
+    while True:
+        email = str(input('Email: '))
+        if re.search('[@]',email) is None:
+            print("Voer een geldig email adres in.")
+        elif re.search('[.]',email) is None:
+            print("Voer een geldig email adres in.")
+        else:
+            return email
+            print("Email voldoet aan voorwaarden")
+            break
 
-import re
+goed_email = email(email)
+
 
 goed_wachtwoord = ''
 def wachtwoord(wachtwoord):
@@ -69,6 +82,6 @@ goed_pincode = pincode(goed_pincode)
 # Knop fiets ophalen, wegzetten of informatie opvragen.
 
 
-registratie =[voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, email, goed_wachtwoord, goed_pincode]
+registratie =[voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, goed_email, goed_wachtwoord, goed_pincode]
 
 print(registratie)
