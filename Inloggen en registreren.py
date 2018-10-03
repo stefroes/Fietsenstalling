@@ -45,7 +45,18 @@ def wachtwoord_check():
 
 wachtwoord_check()
 
-pincode = input('4 cijferige pincode: ')
+goed_pincode = ''
+def pincode(pincode):
+    while True:
+        pincode = input('4 cijferige pincode: ')
+        if len(pincode) != 4:
+            print("Wachtwoord moet 4 cijfers bevatten.")
+        else:
+            return pincode
+            print("Pincode voldoet aan voorwaarden.")
+            break
+
+goed_pincode = pincode(goed_pincode)
 
 # Captcha
 # label uitprinten voor op je fiets(dit is je unieke code)
@@ -58,6 +69,6 @@ pincode = input('4 cijferige pincode: ')
 # Knop fiets ophalen, wegzetten of informatie opvragen.
 
 
-registratie = [voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, email, goed_wachtwoord, pincode]
+registratie =[voornaam, achternaam, postcode, huisnummer, datum_datum, datum_tijd, email, goed_wachtwoord, goed_pincode]
 
 print(registratie)
