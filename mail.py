@@ -6,7 +6,8 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
-import genQR
+import random
+import string
 
 # Maak de headers aan voor de mail
 msg = MIMEMultipart()
@@ -14,17 +15,15 @@ msg['From'] = "noreply@fietsenstalling.nl"
 msg['To'] = "test@mail.com"
 msg['Subject'] = "Testmail"
 
-# Roep de QR code functie uit het genQR bestand om de QR code te genereren.
-genQR.generate_qr_function()
+fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
 # Maak de body van de mail aan in HTML.
-# TODO Nog maken dat hij de image altijd kan vinden. Nu is het nog op een vast adres op mijn laptop.
 body = "<h2>Testbericht</h2>" \
        "Dit is een testbericht. <br>" \
-       "Hier is de QR code: <br>" \
-       "<img src=C:\\Users\\Jelle\\PycharmProjects\\Fietsenstalling\\QRCodes\\image.jpg> <br>" \
-       "Met vriendelijke groeten, <br>" \
-       "NS Fietsenstalling"
+       "Hier is de fiets code: <br>" \
+       + fiets_code + "<br>" \
+                      "Met vriendelijke groeten, <br>" \
+                      "NS Fietsenstalling"
 
 msg.attach(MIMEText(body, 'html'))
 
