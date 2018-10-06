@@ -1,5 +1,8 @@
-import mysql.connector
 import re
+import db_connect
+
+# Zorg dat dit bestand met het database bestand kan communniceren door de waarde te pakken uit het database bestand.
+db = db_connect.db
 
 # --- MYSQL INSTALLEREN
 # GA NAAR FILE -> SETTINGS -> PROJECT -> PROJECT INTERPRETER -> KLIK RECHTS OP HET PLUS ICON
@@ -10,6 +13,7 @@ import re
 # https://roeswebdesign.nl:8443/domains/databases/phpMyAdmin/
 # username: fietsen_user
 # password: QYm6Pt3Cv4cDNynT
+
 print("Welkom bij de NS - fietsenstalling.\n")
 
 new_customer = input('Heeft u al een account bij de NS-fietsenstalling? Type ja of nee: ').lower()
@@ -70,13 +74,6 @@ if new_customer == 'ja':
     email = input('Vul hier uw e-mail in: ').lower()
     wachtwoord = input('Vul hier uw wachtwoord in: ')
 
-db = mysql.connector.connect(
-    host='37.97.240.38',
-    user='fietsen_user',
-    passwd='QYm6Pt3Cv4cDNynT',
-    database='fietsenstalling'
-)
-
 cursor = db.cursor()
 cursor.execute(
     'INSERT INTO user(first_name, insertion, last_name, zip, `number`, email, password) VALUES(%s, %s, %s, %s, %s, %s, %s)',
@@ -87,9 +84,4 @@ print(cursor.rowcount, 'record inserted.\n')
 
 db.close()
 
-
-
-
-
-
-verwijder dit maar
+# verwijder dit maar
