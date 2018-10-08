@@ -1,51 +1,56 @@
-# Als je mailen wilt op de localhost, download het programma "Test Mail Server Tool".
-# Als je dat programma download, dan kan je ook de mailfunctie testen.
-
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import random
 import string
 
-# Maak het object bericht aan.
-msg = MIMEMultipart()
 
-# Genereer de random fietscode met getallen en letters van 5 (k=5) tekens
-fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+def send_mail():
+    """ Functie om email op te stellen en te versturen. """
+    # Maak het object bericht aan.
+    msg = MIMEMultipart()
 
-# Maak de bericht van de mail aan in HTML.
-message = "<h2>Testbericht</h2>" \
-          "Dit is een testbericht. <br>" \
-          "Hier is de fiets code: <br>" \
-          + fiets_code + "<br>" \
-                         "Met vriendelijke groeten, <br>" \
-                         "NS Fietsenstalling"
+    # Genereer de random fietscode met getallen en letters van 5 (k=5) tekens
+    fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
-# Maak de parameters van het bericht aan.
-password = "identificatiesysteem"
-msg['From'] = "fietsenstallingv1a@gmail.com"
-msg['To'] = "jellevandenbroek@gmail.com"
-msg['Subject'] = "Subscription"
+    # Maak de bericht van de mail aan in HTML.
+    message = "Beste klant,<br><br>" \
+              "Bedankt voor het gebruiken van onze fietsenstalling.<br>" \
+              "Hier is uw fiets code: <br>" \
+              "<h1>" + fiets_code + "</h1><br>" \
+                                    "Met vriendelijke groeten, <br>" \
+                                    "NS Fietsenstalling"
 
-# Voeg het bericht toe aan de mail
-msg.attach(MIMEText(message, 'plain'))
+    # Maak de parameters van het bericht aan.
+    password = "identificatiesysteem"
+    msg['From'] = "fietsenstallingv1a@gmail.com"
+    msg['To'] = "jellevandenbroek@gmail.com"
+    msg['Subject'] = "Fietsenstalling Fiets Code {}".format(fiets_code)
 
-# Maak verbinding met de gmail server
-server = smtplib.SMTP('smtp.gmail.com: 587')
+    # Voeg het bericht toe aan de mail
+    msg.attach(MIMEText(message, 'HTML'))
 
-server.starttls()
+    # # # Code om te mailen via gmail. # # #
+    # Maak verbinding met de gmail server.
+    server = smtplib.SMTP('smtp.gmail.com: 587')
 
-# Stuur login naar gmail om de mail te kunnen verzenden
-server.login(msg['From'], password)
+    # Beveilig de mail bij het versturen.
+    server.starttls()
 
-# Stuur de email via de server
-server.sendmail(msg['From'], msg['To'], msg.as_string())
+    # Stuur login naar gmail om de mail te kunnen verzenden
+    server.login(msg['From'], password)
 
-server.quit()
+    # Stuur de email via de server
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
 
-print("successfully sent email to %s:" % (msg['To']))
+    server.quit()
 
-# Code om lokaal emails te sturen
-# smtpObj = smtplib.SMTP('localhost')
-# smtpObj.sendmail(msg['From'], msg['To'], msg.as_string())
-# print("Successfully sent email")
+    # # # Code te mailen via localhost # # #
+    # smtpObj = smtplib.SMTP('localhost')
+    # smtpObj.sendmail(msg['From'], msg['To'], msg.as_string())
+
+    # Als je mailen wilt op de localhost, comment dan het gmail gedeelte uit.
+    # Download het programma "Test Mail Server Tool". Hiermee kun je de mailfunctie testen.
+
+
+send_mail()
