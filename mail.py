@@ -1,7 +1,5 @@
-# Hij stuurt nu emails op de localhost.
-# Deze ontvang ik met het programma "Test Mail Server Tool".
+# Als je mailen wilt op de localhost, download het programma "Test Mail Server Tool".
 # Als je dat programma download, dan kan je ook de mailfunctie testen.
-
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -9,29 +7,45 @@ import smtplib
 import random
 import string
 
-# Maak de headers aan voor de mail
+# Maak het object bericht aan.
 msg = MIMEMultipart()
-msg['From'] = "noreply@fietsenstalling.nl"
-msg['To'] = "test@mail.com"
-msg['Subject'] = "Testmail"
 
+# Genereer de random fietscode met getallen en letters van 5 (k=5) tekens
 fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
-# Maak de body van de mail aan in HTML.
-body = "<h2>Testbericht</h2>" \
-       "Dit is een testbericht. <br>" \
-       "Hier is de fiets code: <br>" \
-       + fiets_code + "<br>" \
-                      "Met vriendelijke groeten, <br>" \
-                      "NS Fietsenstalling"
+# Maak de bericht van de mail aan in HTML.
+message = "<h2>Testbericht</h2>" \
+          "Dit is een testbericht. <br>" \
+          "Hier is de fiets code: <br>" \
+          + fiets_code + "<br>" \
+                         "Met vriendelijke groeten, <br>" \
+                         "NS Fietsenstalling"
 
-msg.attach(MIMEText(body, 'html'))
+# Maak de parameters van het bericht aan.
+password = "identificatiesysteem"
+msg['From'] = "fietsenstallingv1a@gmail.com"
+msg['To'] = "jellevandenbroek@gmail.com"
+msg['Subject'] = "Subscription"
 
-# Maak verbinding mer de SMTP Email dienst en verstuur de email. Misschien nog gegevens aanpassen als het live is?
-server = smtplib.SMTP("localhost", 25)
-server.connect("localhost", 25)
-# server.starttls()
-server.ehlo()
-# server.login('email', 'password')
+# Voeg het bericht toe aan de mail
+msg.attach(MIMEText(message, 'plain'))
+
+# Maak verbinding met de gmail server
+server = smtplib.SMTP('smtp.gmail.com: 587')
+
+server.starttls()
+
+# Stuur login naar gmail om de mail te kunnen verzenden
+server.login(msg['From'], password)
+
+# Stuur de email via de server
 server.sendmail(msg['From'], msg['To'], msg.as_string())
+
 server.quit()
+
+print("successfully sent email to %s:" % (msg['To']))
+
+# Code om lokaal emails te sturen
+# smtpObj = smtplib.SMTP('localhost')
+# smtpObj.sendmail(msg['From'], msg['To'], msg.as_string())
+# print("Successfully sent email")
