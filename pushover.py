@@ -2,10 +2,10 @@ import http.client
 import urllib
 import datetime
 
-message = 'U heeft zojuist uw fiets opgehaald om ' + str(datetime.datetime.now().strftime("%H:%M:%S"))
+# Maak een bericht aan om te sturen als notificatie.
+message = 'U heeft zojuist uw fiets opgehaald om {}'.format(str(datetime.datetime.now().strftime("%H:%M:%S")))
 
-print(message)
-
+# Maak verbinding met pushover.
 conn = http.client.HTTPSConnection('api.pushover.net:443')
 conn.request('POST', '/1/messages.json',
              urllib.parse.urlencode({
@@ -14,3 +14,6 @@ conn.request('POST', '/1/messages.json',
                  'message': message,
              }), {'Content-type': 'application/x-www-form-urlencoded'})
 conn.getresponse()
+
+# User code Stef: uhkh497h942ogr4efpqsq78ahti2qj
+# User code Jelle: uawn4pj4uk87kzjfkrfq4oxqsqd2pk

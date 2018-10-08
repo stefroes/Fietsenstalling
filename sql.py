@@ -1,5 +1,11 @@
 import re
 import db_connect
+import random
+import string
+
+# TODO Vind een goede plek voor fietscode genereren:
+# Genereer de random fietscode met getallen en letters van 5 (k=5) tekens
+fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
 # Zorg dat dit bestand met het database bestand kan communniceren door de waarde te pakken uit het database bestand.
 db = db_connect.db
@@ -13,6 +19,7 @@ db = db_connect.db
 # https://roeswebdesign.nl:8443/domains/databases/phpMyAdmin/
 # username: fietsen_user
 # password: QYm6Pt3Cv4cDNynT
+
 
 print("Welkom bij de NS - fietsenstalling.\n")
 
@@ -84,4 +91,15 @@ print(cursor.rowcount, 'record inserted.\n')
 
 db.close()
 
+# TODO Waar ging dit over:
 # verwijder dit maar
+
+
+# TODO Voeg inloggen_registreren bij dit bestand.
+# TODO Voeg bij de insert de fietscode toe.
+# TODO Stuur een mail als account is gemaakt.
+# TODO Deel de bestanden op in inchecken en uitchecken.
+# TODO Maak een informatiepagina met algemene en persoonlijke informatie.
+# TODO Lezen van OV code, in een waarde stoppen en aan gebruiker koppelen in database.
+# TODO Beslissen wat er moet gebeuren met de pincode
+# TODO Beslissen wat er moet gebeuren met de gebruiker als de fiets is geparkeerd.

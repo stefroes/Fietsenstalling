@@ -1,8 +1,6 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
-import random
-import string
 
 
 def send_mail():
@@ -10,16 +8,13 @@ def send_mail():
     # Maak het object bericht aan.
     msg = MIMEMultipart()
 
-    # Genereer de random fietscode met getallen en letters van 5 (k=5) tekens
-    fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-
     # Maak de bericht van de mail aan in HTML.
     message = "Beste klant,<br><br>" \
               "Bedankt voor het gebruiken van onze fietsenstalling.<br>" \
               "Hier is uw fiets code: <br>" \
-              "<h1>" + fiets_code + "</h1><br>" \
-                                    "Met vriendelijke groeten, <br>" \
-                                    "NS Fietsenstalling"
+              "<h1>{}</h1><br>" \
+              "Met vriendelijke groeten, <br>" \
+              "NS Fietsenstalling".format(fiets_code)
 
     # Maak de parameters van het bericht aan.
     password = "identificatiesysteem"
@@ -51,6 +46,3 @@ def send_mail():
 
     # Als je mailen wilt op de localhost, comment dan het gmail gedeelte uit.
     # Download het programma "Test Mail Server Tool". Hiermee kun je de mailfunctie testen.
-
-
-send_mail()
