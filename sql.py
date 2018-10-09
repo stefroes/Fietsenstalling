@@ -84,11 +84,12 @@ if new_customer == 'ja':
     wachtwoord = input('Vul hier uw wachtwoord in: ')
 
 cursor = db.cursor()
-cursor.execute(
-    'INSERT INTO user(first_name, insertion, last_name, zip, `number`, email, password) VALUES(%s, %s, %s, %s, %s, %s, %s)',
-    (first_name, insertion, last_name, zip, number, goed_email, goed_wachtwoord))
+query = "INSERT INTO user(first_name, insertion, last_name, zip, `number`, email, password) " \
+        "VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(first_name, insertion, last_name, zip, number, goed_email, goed_wachtwoord)
+cursor.execute(query)
 db.commit()
 
+print(query)
 print(cursor.rowcount, 'record inserted.\n')
 
 db.close()
