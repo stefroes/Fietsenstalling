@@ -4,6 +4,7 @@ import random
 import string
 import datetime
 import encode
+import mail
 
 # Zorg dat dit bestand met het database bestand kan communniceren door de waarde te pakken uit het database bestand.
 db = db_connect.db
@@ -93,6 +94,8 @@ while True:
         cursor.execute(query)
         db.commit()
 
+        mail.send_mail(first_name, goed_email, fiets_code)
+
         print(query)
 
         db.close()
@@ -105,7 +108,7 @@ while True:
     else:
         print("Voer een geldige waarde in.")
 
-# TODO Stuur een mail als account is gemaakt.
+# TODO Maak email inhoud beter
 # TODO Deel de bestanden op in inchecken en uitchecken.
 # TODO Maak een informatiepagina met algemene en persoonlijke informatie.
 # TODO Lezen van OV code, in een waarde stoppen en aan gebruiker koppelen in database.
@@ -115,4 +118,4 @@ while True:
 # TODO Maak een inlog systeem - Suhaib
 # TODO Zorg ervoor dat email uniek is en dat er een melding komt als dit niet zo is.
 # TODO Misschien if statements optimaliseren volgens beoordelingsformulier PROG.
-# TODO Commentaar toeveogen aan functies met """ ... """ en bij overige dingen met # ... .
+# TODO Commentaar toevoegen aan functies met """ ... """ en bij overige dingen met # ... .
