@@ -87,9 +87,3 @@ print(cursor.rowcount, 'record inserted.\n')
 
 db.close()
 
-
-
-
-
-
-verwijder dit maar
