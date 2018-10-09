@@ -23,9 +23,9 @@ def email(email):
         elif re.search('[.]', email) is None:
             print("Voer een geldig email adres in.")
         else:
-            return email
             print("Email voldoet aan voorwaarden")
-            break
+            return email
+
 
 goed_email = email(email)
 
@@ -41,9 +41,9 @@ def wachtwoord(wachtwoord):
         elif re.search('[A-Z]', wachtwoord) is None:
             print("Wachtwoord moet minimaal 1 hoofdletter bevatten.")
         else:
-            return wachtwoord
             print("Wachtwoord voldoet aan voorwaarden.")
-            break
+            return wachtwoord
+
 goed_wachtwoord = wachtwoord(goed_wachtwoord)
 
 # wachtwoord_check = str(input('Herhaal wachtwoord: '))
