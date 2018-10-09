@@ -51,8 +51,8 @@ if new_customer == 'nee':
             elif re.search('[.]', email) is None:
                 print("Voer een geldig email adres in.")
             else:
-                return email
                 print("Email voldoet aan voorwaarden")
+                return email
                 break
 
 
@@ -71,8 +71,8 @@ if new_customer == 'nee':
             elif re.search('[A-Z]', wachtwoord) is None:
                 print("Wachtwoord moet minimaal 1 hoofdletter bevatten.")
             else:
-                return wachtwoord
                 print("Wachtwoord voldoet aan voorwaarden.")
+                return wachtwoord
                 break
 
 
