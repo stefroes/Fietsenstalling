@@ -43,6 +43,7 @@ if new_customer == 'nee':
 
 
     def email(email):
+        """ Controleer of het ingevulde email adres voldoet aan de eisen. """
         while True:
             email = str(input('Vul hier uw Email in: '))
             if re.search('[@]', email) is None:
@@ -60,6 +61,7 @@ if new_customer == 'nee':
 
 
     def wachtwoord(wachtwoord):
+        """ Controleer of het ingevulde wachtwoord voldoet aan de eisen. """
         while True:
             wachtwoord = input("Wachtwoord (Minmaal 8 karakters, 1 hoofdletter en 1 cijfer): ")
             if len(wachtwoord) < 8:
@@ -90,9 +92,6 @@ db.commit()
 print(cursor.rowcount, 'record inserted.\n')
 
 db.close()
-
-# TODO Waar ging dit over:
-# verwijder dit maar
 
 
 # TODO Voeg inloggen_registreren bij dit bestand.
