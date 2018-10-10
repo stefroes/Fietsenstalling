@@ -22,21 +22,9 @@ cursor.execute(userQuery)
 db.commit()
 
 # Zet het resultaat van de query in een waarde.
-data = str(cursor.fetchone())
-result = data.strip("(,)")
-
-# Query om aantal bezette plaatsen te selecteren.
-countQuery = "SELECT count(*) " \
-             "FROM `interaction`"
-
-# Voer de query uit.
-cursor = db.cursor(buffered=True)
-cursor.execute(countQuery)
-db.commit()
-
-# Zet het resultaat van de query in een waarde.
-count = str(cursor.fetchone())
-countResult = count.strip("(,)")
+data = cursor.fetchone()
+for entry in data:
+    result = entry
 
 # Query om bezette plaatsnummers te selecteren.
 spotQuery = "SELECT `spot` " \
