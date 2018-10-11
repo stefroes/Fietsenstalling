@@ -14,7 +14,7 @@ db = db_connect.db
 def valid_email():
     """Check if is valid E-mail"""
     while True:
-        string = input('E-mail: ').lower()
+        string = raw_input('E-mail: ').lower()
         if re.search('[@]', string) is None:
             print('Voer een geldig email adres in.')
         elif re.search('[.]', string) is None:
@@ -75,7 +75,6 @@ def get_free_spot():
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal, frame):
     global reading
-    print("Ctrl+C captured, ending read.")
     reading = False
     GPIO.cleanup()
 
@@ -84,9 +83,7 @@ def end_read(signal, frame):
 signal.signal(signal.SIGINT, end_read)
 
 MIFAREReader = MFRC522.MFRC522()
-# MIFAREReader = MFRC522.Reader(0, 0, 22)
 
-# Welcome message
 print("SCANNING: ")
 
 # OV SCAN
@@ -104,47 +101,45 @@ while reading:
 
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
-
-        # 24:C4:4E:6B (OV: HEX)
-        # 37:196:78:107 (OV: Decimale)
-
         ov = '{}:{}:{}:{}'.format(uid[0], uid[1], uid[2], uid[3])
         print(ov)
 
         cursor = db.cursor()
         cursor.execute('SELECT user.userID, interaction.spot FROM user INNER JOIN interaction ON user.userID = interaction.userID WHERE ov = %s', (ov,))
-
         data = cursor.fetchall()
-
-        userID = data[0]
-        spot = data[1]
-
         cursor.close()
 
-        # INCHECKEN > UITCHECKEN
-        if cursor.rowcount != 0:
-            cursor = db.cursor()
-            cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID))
-            db.commit()
-            cursor.close()
-            print(cursor.rowcount)
+        if cursor.rowcount > 0:
+            userID = data[0]
+            spot = data[1]
 
-            if cursor.rowcount:
-                print('U bent UITGECHECKT op spot #' + str(spot))
+            # INCHECKEN > UITCHECKEN
+            if cursor.rowcount != 0:
+                cursor = db.cursor()
+                cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID))
+                db.commit()
+                cursor.close()
+                print(cursor.rowcount)
+
+                if cursor.rowcount:
+                    print('U bent UITGECHECKT op spot #' + str(spot))
+                else:
+                    print('Er ging iets mis met uitchecken')
+
             else:
-                print('Er ging iets mis met uitchecken')
+                # UITCHECKEN > INCHECKEN
+                cursor = db.cursor()
+                spot = get_free_spot()
+                cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (userID, get_date(), spot))
+                db.commit()
+                cursor.close()
+
+                if cursor.rowcount:
+                    print('U bent INGECHECKT op spot #' + str(spot))
+                else:
+                    print('Er ging iets mis met inchecken')
+
+            time.sleep(1)
 
         else:
-            # UITCHECKEN > INCHECKEN
-            cursor = db.cursor()
-            spot = get_free_spot()
-            cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (userID, get_date(), spot))
-            db.commit()
-            cursor.close()
-
-            if cursor.rowcount:
-                print('U bent INGECHECKT op spot #' + str(spot))
-            else:
-                print('Er ging iets mis met inchecken')
-
-        time.sleep(1)
+            register()
