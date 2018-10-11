@@ -17,35 +17,23 @@ userQuery = "SELECT `userID` " \
             "WHERE `ov` = '" + ovnummer + "'"
 
 # Voer de query uit.
-cursor = db.cursor(buffered=True)
+cursor = db.cursor()
 cursor.execute(userQuery)
-db.commit()
 
 # Zet het resultaat van de query in een waarde.
-data = str(cursor.fetchone())
-result = data.strip("(,)")
+data = cursor.fetchone()
+for entry in data:
+    result = entry
 
-# Query om aantal bezette plaatsen te selecteren.
-countQuery = "SELECT count(*) " \
-             "FROM `interaction`"
-
-# Voer de query uit.
-cursor = db.cursor(buffered=True)
-cursor.execute(countQuery)
-db.commit()
-
-# Zet het resultaat van de query in een waarde.
-count = str(cursor.fetchone())
-countResult = count.strip("(,)")
+cursor.close()
 
 # Query om bezette plaatsnummers te selecteren.
 spotQuery = "SELECT `spot` " \
             "FROM `interaction`"
 
 # Voer de query uit.
-cursor = db.cursor(buffered=True)
+cursor = db.cursor()
 cursor.execute(spotQuery)
-db.commit()
 
 # Zet het resultaat van de query in een lijst.
 spot = list(cursor.fetchall())
@@ -70,6 +58,8 @@ while True:
 
     if spotnummer in allePlaatsen:
         break
+
+cursor.close()
 
 # Query om de gebruiker en plaatsnummer in de database te zetten.
 query2 = "INSERT INTO `interaction`(`userID`, `date`, `spot`) " \
