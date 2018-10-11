@@ -6,4 +6,5 @@ db = mysql.connector.connect(
     user='fietsen_user',
     passwd='QYm6Pt3Cv4cDNynT',
     database='fietsenstalling',
+    buffered=True
 )
