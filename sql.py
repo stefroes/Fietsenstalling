@@ -6,6 +6,7 @@ import datetime
 import encode
 import mail
 
+
 # Zorg dat dit bestand met het database bestand kan communniceren door de waarde te pakken uit het database bestand.
 db = db_connect.db
 

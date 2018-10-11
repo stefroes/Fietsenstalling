@@ -12,7 +12,9 @@ def send_mail(name, tomail, fiets_code):
     message = "Beste {},<br><br>" \
               "Bedankt voor het gebruiken van onze fietsenstalling.<br>" \
               "Hier is uw fiets code: <br>" \
-              "<h1>{}</h1><br>" \
+              "<h1>{}</h1>" \
+              "Deze code heeft u nodig om uw fiets uit te checken, bewaar deze code daarom goed ! <br>" \
+              "   <br>    "\
               "Met vriendelijke groeten, <br>" \
               "NS Fietsenstalling".format(name, fiets_code)
 
