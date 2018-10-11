@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Fietsenstalling.iml" filepath="$PROJECT_DIR$/.idea/Fietsenstalling.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/NS-fietsenstalling miniproject.iml" filepath="$PROJECT_DIR$/.idea/NS-fietsenstalling miniproject.iml" />
     </modules>
   </component>

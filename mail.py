@@ -3,23 +3,23 @@ from email.mime.text import MIMEText
 import smtplib
 
 
-def send_mail():
+def send_mail(name, tomail, fiets_code):
     """ Functie om email op te stellen en te versturen. """
     # Maak het object bericht aan.
     msg = MIMEMultipart()
 
     # Maak de bericht van de mail aan in HTML.
-    message = "Beste klant,<br><br>" \
+    message = "Beste {},<br><br>" \
               "Bedankt voor het gebruiken van onze fietsenstalling.<br>" \
               "Hier is uw fiets code: <br>" \
               "<h1>{}</h1><br>" \
               "Met vriendelijke groeten, <br>" \
-              "NS Fietsenstalling".format(fiets_code)
+              "NS Fietsenstalling".format(name, fiets_code)
 
     # Maak de parameters van het bericht aan.
     password = "identificatiesysteem"
     msg['From'] = "fietsenstallingv1a@gmail.com"
-    msg['To'] = "jellevandenbroek@gmail.com"
+    msg['To'] = tomail
     msg['Subject'] = "Fietsenstalling Fiets Code {}".format(fiets_code)
 
     # Voeg het bericht toe aan de mail
