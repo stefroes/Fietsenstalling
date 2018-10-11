@@ -119,3 +119,4 @@ while True:
 # TODO Zorg ervoor dat email uniek is en dat er een melding komt als dit niet zo is.
 # TODO Misschien if statements optimaliseren volgens beoordelingsformulier PROG.
 # TODO Commentaar toevoegen aan functies met """ ... """ en bij overige dingen met # ... .
+
