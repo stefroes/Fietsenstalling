@@ -52,10 +52,7 @@ while True:
                 else:
                     print("Email voldoet aan voorwaarden")
                     return email
-                    break
 
-
-        goed_email = email(email)
 
         # Pak de huidige datum en tijd
         dateAndTime = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
@@ -63,13 +60,20 @@ while True:
         # Genereer de random fietscode met getallen en letters van 5 (k=5) tekens
         fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
-        cursor = db.cursor()
-        query = "INSERT INTO user(unique_code, first_name, insertion, last_name, zip, `streetnumber`, email, date_time) " \
-                "VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fiets_code, first_name, insertion,
-                                                                                last_name, zip, number,
-                                                                                goed_email, dateAndTime)
-        cursor.execute(query)
-        db.commit()
+        while True:
+            goed_email = email(email)
+
+            cursor = db.cursor()
+            query = "INSERT INTO user(unique_code, first_name, insertion, last_name, zip, `streetnumber`, email, date_time) " \
+                    "VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fiets_code, first_name, insertion,
+                                                                                    last_name, zip, number,
+                                                                                    goed_email, dateAndTime)
+            try:
+                cursor.execute(query)
+                db.commit()
+                break
+            except:
+                print('Er is al een gebruiker met uw gegevens.')
 
         mail.send_mail(first_name, goed_email, fiets_code)
 
