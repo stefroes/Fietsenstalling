@@ -35,9 +35,6 @@ def registreren():
     zip = input('Vul hier uw postcode in: ').replace(' ', '').upper()
     number = input('Vul hier uw huisnummer in: ')
 
-    # Pak de huidige datum en tijd
-    dateAndTime = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-
     # Genereer de random fietscode met getallen en letters van 5 (k=5) tekens
     fiets_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
@@ -53,6 +50,9 @@ def registreren():
                 break
 
         goed_email = emailInput
+
+        # Pak de huidige datum en tijd
+        dateAndTime = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
 
         cursor = db.cursor()
         query = "INSERT INTO user(unique_code, first_name, insertion, last_name, zip, `streetnumber`, email, date_time) " \
@@ -76,6 +76,8 @@ def registreren():
 while True:
     # ----------------------------------------------------------------------------------------- #
     # Dit gedeelte als het ov nummer lezen werkt.
+    #
+    #
     # ovnummer = "37:196:78:107"
     #
     # # Query om de correcte gebruiker te selecteren.
@@ -93,6 +95,8 @@ while True:
     #         print("Bestaat, inloggen")
     # except:
     #     print("Bestaat niet, registreren")
+    #
+    #
     # ----------------------------------------------------------------------------------------- #
 
     print("Welkom bij de NS - fietsenstalling.\n")
