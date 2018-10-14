@@ -1,33 +1,17 @@
 from tkinter import *
 
-def toonLoginFrame():
-    hoofdframe.pack_forget()
-    loginframe.pack()
+def speak():
+    print("zoek het zelf uit")
 
-def toonHoofdFrame():
-    loginframe.pack_forget()
-    hoofdframe.pack()
+main = Tk()
+main.title("Fietsenstalling")
+main.geometry("400x400")
 
-def login():
-    if loginfield.get() == "admin":
-        toonHoofdFrame()
-    else:
-        print('Verkeerde gebruikersnaam!')
+Label(main, text = "Houd hier uw pas").grid(row=0, column=0, sticky=W)
+Button(main, text= "help", width=12, command=speak).grid(row=1, column=0, sticky=W)
 
 
-root = Tk()
 
-loginframe = Frame(master=root)
-loginframe.pack(fill="both", expand=True)
-loginfield = Entry(master=loginframe)
-loginfield.pack(padx=20, pady=20)
-loginbutton = Button(master=loginframe, text='login', command=login)
-loginbutton.pack(padx=20, pady=20)
+main.mainloop()
 
-hoofdframe = Frame(master=root)
-hoofdframe.pack(fill="both", expand=True)
-backbutton = Button(master=hoofdframe, text='<', command=toonLoginFrame)
-backbutton.pack(padx=20, pady=20)
 
-toonLoginFrame()
-root.mainloop()
