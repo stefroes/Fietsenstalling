@@ -1,14 +1,51 @@
 import tkinter
 
-def speak():
-    print('Hi')
+def toonLoginFrame():
+    toonMainMenu.pack_forget()
+    hoofdframe.pack_forget()
+    loginframe.pack()
 
-main=Tk()
-main.title("NS-fietsenstalling")
-main.geometry("400x400")
+def toonHoofdFrame():
+    loginframe.pack_forget()
+    hoofdframe.pack()
 
-Label(main, text="Welkom bij de NS-fietsenstalling").grid(row=0, column=0, sticky=W)
 
-Button(main, text="My button", width=12, command=speak).grid(row=1, column=0, sticky=W)
+def toonMainMenu():
+    hoofdframe.pack_forget()
+    toonMainMenu.pack()
+    #label3 = Label(master=toonMainMenu, text='scherm3', background='yellow')
+    #label3.pack()
 
-main.mainloop()
+
+
+root = Tk()
+
+loginframe = Frame(master=root)
+loginframe.pack( expand=True)
+#loginfield = Entry(master=loginframe)
+#loginfield.pack(padx=10, pady=10)
+loginbutton = Button(master=loginframe, text='Houd hier uw pas', command=toonHoofdFrame)
+loginbutton.pack(padx=20, pady=20)
+
+
+
+hoofdframe = Frame(master=root)
+hoofdframe.pack( expand=True)
+backbutton = Button(master=hoofdframe, text='volgend scherm', command=toonMainMenu)
+backbutton.pack(padx=20, pady=20)
+
+label = Label(master=loginframe, text='scherm1', background='yellow')
+label.pack()
+label = Label(master=hoofdframe, text='scherm2', background='yellow')
+label.pack()
+
+
+toonMainMenu = Frame(master=root)
+hoofdframe.pack( expand=True)
+backbutton2 = Button(master=toonMainMenu, text='terug naar scherm 1', command=toonLoginFrame)
+backbutton2.pack(padx=20, pady=20)
+label3 = Label(master=toonMainMenu, text='scherm3', background='yellow')
+label3.pack()
+
+toonLoginFrame()
+root.mainloop()

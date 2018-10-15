@@ -12,7 +12,9 @@ plaatsenBezet = []
 allePlaatsen = []
 
 # Query om de correcte gebruiker te selecteren.
-userQuery = "SELECT userID FROM user WHERE ov = '" + ovnummer + "'"
+userQuery = "SELECT `userID` " \
+            "FROM `user` " \
+            "WHERE `ov` = '" + ovnummer + "'"
 
 # Voer de query uit.
 cursor = db.cursor()

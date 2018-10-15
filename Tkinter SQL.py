@@ -41,7 +41,6 @@ def printIt():
     goed_email = email[0]
 
     if username == goed_email:
-        eval(input('Wat wil je nu zeggen pik: '))
         print('lekker bezig man')
     else:
         print('Nee man')
