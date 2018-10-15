@@ -1,38 +1,55 @@
 from tkinter import *
 
-#kopieeren van data binnen de GUI
-def copy():
-    temp = inputbox.get()
-    output.insert(END, temp)
-    inputbox.delete(0, END)
-
-def NextScreen():
-    pass
-
-main = Tk()
-main.title("Fietsenstalling")
-main.geometry("400x400")
-
-#Frame in het main scherm
-GUIFrame = Frame(main)
-GUIFrame.grid(row=1, column=0, sticky=S)
-
-#Inputveld
-inputbox = Entry(GUIFrame, width = 20, bg = "light grey")
-inputbox.grid(row=1, column=0, sticky=W)
-
-#Normale tekst
-Label(main, text = "Houd hier uw pas", bg = "red", foreground= "white" ).grid(row=0, column=0, sticky=S)
-
-#kopieert de tekst
-Button(GUIFrame, text= "Kopieer de tekst", width=12, command=copy).grid(row=2, column=0, sticky=S)
-Button(GUIFrame, text= "naar het volgende scherm", width=24,command=NextScreen).grid(row=6,column=0, sticky=S)
-#output veld voor gekopieerde tekst
-output = Text(GUIFrame, width=20, height=5, bg="light grey")
-output.grid(row=4, column=0, sticky=S)
+def toonLoginFrame():
+    hoofdframe.pack_forget()
+    loginframe.pack()
 
 
 
-main.mainloop()
+def toonHoofdFrame():
+    loginframe.pack_forget()
+    hoofdframe.pack()
 
 
+def toonMainMenu():
+    hoofdframe.pack_forget()
+    toonMainMenu.pack()
+    label3 = Label(master=toonMainMenu, text='scherm3', background='yellow')
+    label3.pack()
+
+
+
+
+
+
+root = Tk()
+
+loginframe = Frame(master=root)
+loginframe.pack( expand=True)
+#loginfield = Entry(master=loginframe)
+#loginfield.pack(padx=10, pady=10)
+loginbutton = Button(master=loginframe, text='Houd hier uw pas', command=toonHoofdFrame)
+loginbutton.pack(padx=20, pady=20)
+
+
+
+hoofdframe = Frame(master=root)
+hoofdframe.pack( expand=True)
+backbutton = Button(master=hoofdframe, text='volgend scherm', command=toonMainMenu)
+backbutton.pack(padx=20, pady=20)
+
+label = Label(master=loginframe, text='scherm1', background='yellow')
+label.pack()
+label = Label(master=hoofdframe, text='scherm2', background='yellow')
+label.pack()
+
+
+
+toonMainMenu = Frame(master=root)
+toonMainMenu.pack()
+backbutton2 = Button(master=toonMainMenu, text='terug naar scherm 1', command=toonLoginFrame)
+backbutton2.pack(padx=20, pady=20)
+
+
+toonLoginFrame()
+root.mainloop()
