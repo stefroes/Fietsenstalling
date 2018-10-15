@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter
 
 def toonLoginFrame():
     toonMainMenu.pack_forget()
