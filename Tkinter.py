@@ -4,19 +4,22 @@ def toonLoginFrame():
     hoofdframe.pack_forget()
     loginframe.pack()
 
+
 def toonHoofdFrame():
     loginframe.pack_forget()
     hoofdframe.pack()
 
+
 def login():
-    if loginfield.get() == "ja" or "Ja":
+    if loginfield.get() == "ja":
         toonHoofdFrame()
     else:
         print('Verkeerde gebruikersnaam!')
 
+
 root = Tk()
 
-label = Label(master=root,text='Welkom bij de NS fietsenstallning.',height=2)
+label = Label(master=root, text='Welkom bij de NS fietsenstallning.', height=2)
 label.pack()
 
 loginframe = Frame(master=root)
