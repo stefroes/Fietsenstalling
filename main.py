@@ -14,7 +14,7 @@ db = db_connect.db
 def valid_email():
     """Check if is valid E-mail"""
     while True:
-        string = raw_input('E-mail: ').lower()
+        string = input('E-mail: ').lower()
         if re.search('[@]', string) is None:
             print('Voer een geldig email adres in.')
         elif re.search('[.]', string) is None:
