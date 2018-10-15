@@ -11,6 +11,7 @@ import string
 
 db = db_connect.db
 
+GPIO.setwarnings(False)
 GPIO.cleanup()
 
 total_spots = 100
@@ -22,9 +23,7 @@ def valid_email():
     """Check if is valid E-mail"""
     while True:
         string = input('E-mail: ').lower()
-        if re.search('[@]', string) is None:
-            print('Voer een geldig email adres in.')
-        elif re.search('[.]', string) is None:
+        if re.search('[@]', string) is None and len(string) > 5 and re.search('[.]', string) is None:
             print('Voer een geldig email adres in.')
         else:
             return string
@@ -56,7 +55,7 @@ def verify_password(string):
 
 def get_date():
     """Get current datetime"""
-    return datetime.datetime.now().strftime('%d-%m-%G %H:%M:%S')
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
 def get_code():
@@ -78,7 +77,6 @@ def register(ov):
     cursor = db.cursor()
     cursor.execute('INSERT INTO user (unique_code, first_name, last_name, zip, streetnumber, email, ov, date_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (code, first_name, last_name, zip_code, house_number, email, ov, date))
     db.commit()
-    print('REGISTERED: ' + str(cursor.rowcount))
     cursor.close()
 
     scan_ov(ov)
@@ -108,18 +106,16 @@ def end_read(signal, frame):
 
 
 def scan_ov(static_ov=False):
+    """Check-in and check-out based on chipcard"""
     global scanning
 
     print("SCANNING: ")
 
     while scanning:
 
-        # Hook the SIGINT
+        # Hook the SIGINT, # Scan for cards
         signal.signal(signal.SIGINT, end_read)
-
         reader = MFRC522.MFRC522()
-
-        # Scan for cards
         (status, TagType) = reader.MFRC522_Request(reader.PICC_REQIDL)
 
         # If a card is found
@@ -134,30 +130,33 @@ def scan_ov(static_ov=False):
 
             if static_ov:
                 ov = static_ov
+                static_ov = False
             else:
                 ov = '{}:{}:{}:{}'.format(uid[0], uid[1], uid[2], uid[3])
 
             print(ov)
 
             cursor = db.cursor()
-            cursor.execute('SELECT user.userID, interaction.spot FROM user INNER JOIN interaction ON user.userID = interaction.userID WHERE ov = %s', (ov,))
-            data = cursor.fetchone()
-            print(data)
+            cursor.execute('SELECT userID FROM user WHERE ov = %s', (ov,))
+            userID = cursor.fetchall()
+
             found = cursor.rowcount
             cursor.close()
 
+            # USER EXSIST
             if found > 0:
-                userID = data[0]
-                spot = data[1]
-
-                print(data)
+                userID = userID[0][0]
+                cursor = db.cursor()
+                cursor.execute('SELECT spot FROM interaction WHERE userID = %s', (userID,))
 
                 # INCHECKEN > UITCHECKEN
-                if cursor.rowcount != 0:
+                if cursor.rowcount > 0:
+
+                    spot = cursor.fetchall()[0][0]
+
                     cursor = db.cursor()
                     cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID,))
                     db.commit()
-                    cursor.close()
                     print(cursor.rowcount)
 
                     if cursor.rowcount:
@@ -165,18 +164,23 @@ def scan_ov(static_ov=False):
                     else:
                         print('Er ging iets mis met uitchecken')
 
+                    cursor.close()
+
                 else:
                     # UITCHECKEN > INCHECKEN
                     cursor = db.cursor()
                     spot = get_free_spot()
                     cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (userID, get_date(), spot))
                     db.commit()
-                    cursor.close()
 
                     if cursor.rowcount:
                         print('U bent INGECHECKT op spot #' + str(spot))
                     else:
                         print('Er ging iets mis met inchecken')
+
+                    cursor.close()
+
+                cursor.close()
 
                 time.sleep(1)
 
