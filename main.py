@@ -9,6 +9,11 @@ import time
 
 db = db_connect.db
 
+GPIO.cleanup()
+
+total_spots = 100
+scanning = True
+
 
 # FUNCTIONS
 def valid_email():
@@ -52,9 +57,8 @@ def get_date():
     return datetime.datetime.now().strftime('%d-%m-%G %H:%M:%S')
 
 
-def register():
+def register(ov):
     email = valid_email()
-    password = verify_password(valid_password())
     date = get_date()
 
     first_name = input('Voornaam: ').capitalize()
@@ -62,14 +66,26 @@ def register():
     zip_code = input('Postcode: ').upper().replace(' ', '')
     house_number = input('Huisnummer: ').capitalize()
 
-    print([first_name, last_name, zip_code, house_number, email, password, date])
-
-
-reading = True
+    cursor = db.cursor()
+    cursor.execute('INSERT INTO user (first_name, last_name, zip, streetnumber, email, ov, date_time) VALUES (%s, %s, %s, %s, %s, %s, %s)', (first_name, last_name, zip_code, house_number, email, ov, date))
+    db.commit()
+    print('REGISTERED: ' + str(cursor.rowcount))
+    cursor.close()
 
 
 def get_free_spot():
-    return 1
+    global total_spots
+
+    cursor = db.cursor()
+    cursor.execute('SELECT spot FROM interaction')
+    spots = cursor.fetchall()
+    cursor.close()
+
+    for free in range(1, total_spots + 1):
+        if free not in spots:
+            return free
+
+    return False
 
 
 # Capture SIGINT for cleanup when the script is aborted
@@ -87,7 +103,7 @@ MIFAREReader = MFRC522.MFRC522()
 print("SCANNING: ")
 
 # OV SCAN
-while reading:
+while scanning:
 
     # Scan for cards
     (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
@@ -109,6 +125,8 @@ while reading:
         data = cursor.fetchall()
         cursor.close()
 
+        print(cursor.rowcount)
+
         if cursor.rowcount > 0:
             userID = data[0]
             spot = data[1]
@@ -116,7 +134,7 @@ while reading:
             # INCHECKEN > UITCHECKEN
             if cursor.rowcount != 0:
                 cursor = db.cursor()
-                cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID))
+                cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID,))
                 db.commit()
                 cursor.close()
                 print(cursor.rowcount)
@@ -142,4 +160,4 @@ while reading:
             time.sleep(1)
 
         else:
-            register()
+            register(ov)

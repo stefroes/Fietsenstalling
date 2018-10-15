@@ -113,17 +113,7 @@ while True:
     else:
         print("Voer een geldige waarde in.")
 
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+
 # TODO Beslissen wat er moet gebeuren met de gebruiker als de fiets is geparkeerd. - Iedereen
 # TODO Commentaar toevoegen aan functies met """ ... """ en bij overige dingen met # ... . - Iedereen
 # TODO Maak een TKinter interface. - Jim en Laurens
