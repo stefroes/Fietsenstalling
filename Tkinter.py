@@ -5,11 +5,13 @@ def toonLoginFrame():
   toonMainMenu.pack_forget()
   hoofdframe.pack_forget()
   loginframe.pack()
+  photolabel.pack()
 
-#sfunctie om naar hoofdframe te gaan
+#functie om naar hoofdframe te gaan
 def toonHoofdFrame():
   loginframe.pack_forget()
   hoofdframe.pack()
+  photolabel.pack_forget()
 
 #functie om naar main menu te gaan
 def toonMainMenu():
@@ -25,6 +27,11 @@ loginframe = Frame(master=root)
 loginframe.pack( expand=True)
 loginbutton = Button(master=loginframe, text='Houd hier uw pas', command=toonHoofdFrame)
 loginbutton.pack(padx=20, pady=20)
+
+#importeren van een foto
+my_image = PhotoImage(file="beginschermfietsenstalling.png")
+photolabel= Label(root, image=my_image)
+
 
 #scherm 2
 
@@ -52,4 +59,4 @@ label3 = Label(master=toonMainMenu, text='scherm3', background='yellow')
 label3.pack()
 
 toonLoginFrame()
-root.mainloop() (edited)
+root.mainloop()
