@@ -6,6 +6,8 @@ import re
 import db_connect
 import signal
 import time
+import random
+import string
 
 db = db_connect.db
 
@@ -57,9 +59,16 @@ def get_date():
     return datetime.datetime.now().strftime('%d-%m-%G %H:%M:%S')
 
 
+def get_code():
+    """Generate a random code with 5 letters and numbers"""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+
+
 def register(ov):
+    """Register a new user"""
     email = valid_email()
     date = get_date()
+    code = get_code()
 
     first_name = input('Voornaam: ').capitalize()
     last_name = input('Achternaam: ').capitalize()
@@ -67,13 +76,16 @@ def register(ov):
     house_number = input('Huisnummer: ').capitalize()
 
     cursor = db.cursor()
-    cursor.execute('INSERT INTO user (first_name, last_name, zip, streetnumber, email, ov, date_time) VALUES (%s, %s, %s, %s, %s, %s, %s)', (first_name, last_name, zip_code, house_number, email, ov, date))
+    cursor.execute('INSERT INTO user (unique_code, first_name, last_name, zip, streetnumber, email, ov, date_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (code, first_name, last_name, zip_code, house_number, email, ov, date))
     db.commit()
     print('REGISTERED: ' + str(cursor.rowcount))
     cursor.close()
 
+    scan_ov(ov)
+
 
 def get_free_spot():
+    """Get the first free spot"""
     global total_spots
 
     cursor = db.cursor()
@@ -88,76 +100,89 @@ def get_free_spot():
     return False
 
 
-# Capture SIGINT for cleanup when the script is aborted
 def end_read(signal, frame):
+    """Capture SIGINT for cleanup when the script is aborted"""
     global reading
     reading = False
     GPIO.cleanup()
 
 
-# Hook the SIGINT
-signal.signal(signal.SIGINT, end_read)
+def scan_ov(static_ov=False):
+    global scanning
 
-MIFAREReader = MFRC522.MFRC522()
+    print("SCANNING: ")
 
-print("SCANNING: ")
+    while scanning:
 
-# OV SCAN
-while scanning:
+        # Hook the SIGINT
+        signal.signal(signal.SIGINT, end_read)
 
-    # Scan for cards
-    (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
+        reader = MFRC522.MFRC522()
 
-    # If a card is found
-    if status == MIFAREReader.MI_OK:
-        print("Card detected")
+        # Scan for cards
+        (status, TagType) = reader.MFRC522_Request(reader.PICC_REQIDL)
 
-    # Get the UID of the card
-    (status, uid) = MIFAREReader.MFRC522_Anticoll()
+        # If a card is found
+        if status == reader.MI_OK:
+            print('Card detected')
 
-    # If we have the UID, continue
-    if status == MIFAREReader.MI_OK:
-        ov = '{}:{}:{}:{}'.format(uid[0], uid[1], uid[2], uid[3])
-        print(ov)
+        # Get the UID of the card
+        (status, uid) = reader.MFRC522_Anticoll()
 
-        cursor = db.cursor()
-        cursor.execute('SELECT user.userID, interaction.spot FROM user INNER JOIN interaction ON user.userID = interaction.userID WHERE ov = %s', (ov,))
-        data = cursor.fetchall()
-        cursor.close()
+        # If we have the UID, continue
+        if status == reader.MI_OK or static_ov:
 
-        print(cursor.rowcount)
+            if static_ov:
+                ov = static_ov
+            else:
+                ov = '{}:{}:{}:{}'.format(uid[0], uid[1], uid[2], uid[3])
 
-        if cursor.rowcount > 0:
-            userID = data[0]
-            spot = data[1]
+            print(ov)
 
-            # INCHECKEN > UITCHECKEN
-            if cursor.rowcount != 0:
-                cursor = db.cursor()
-                cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID,))
-                db.commit()
-                cursor.close()
-                print(cursor.rowcount)
+            cursor = db.cursor()
+            cursor.execute('SELECT user.userID, interaction.spot FROM user INNER JOIN interaction ON user.userID = interaction.userID WHERE ov = %s', (ov,))
+            data = cursor.fetchone()
+            print(data)
+            found = cursor.rowcount
+            cursor.close()
 
-                if cursor.rowcount:
-                    print('U bent UITGECHECKT op spot #' + str(spot))
+            if found > 0:
+                userID = data[0]
+                spot = data[1]
+
+                print(data)
+
+                # INCHECKEN > UITCHECKEN
+                if cursor.rowcount != 0:
+                    cursor = db.cursor()
+                    cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID,))
+                    db.commit()
+                    cursor.close()
+                    print(cursor.rowcount)
+
+                    if cursor.rowcount:
+                        print('U bent UITGECHECKT op spot #' + str(spot))
+                    else:
+                        print('Er ging iets mis met uitchecken')
+
                 else:
-                    print('Er ging iets mis met uitchecken')
+                    # UITCHECKEN > INCHECKEN
+                    cursor = db.cursor()
+                    spot = get_free_spot()
+                    cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (userID, get_date(), spot))
+                    db.commit()
+                    cursor.close()
+
+                    if cursor.rowcount:
+                        print('U bent INGECHECKT op spot #' + str(spot))
+                    else:
+                        print('Er ging iets mis met inchecken')
+
+                time.sleep(1)
 
             else:
-                # UITCHECKEN > INCHECKEN
-                cursor = db.cursor()
-                spot = get_free_spot()
-                cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (userID, get_date(), spot))
-                db.commit()
-                cursor.close()
+                register(ov)
 
-                if cursor.rowcount:
-                    print('U bent INGECHECKT op spot #' + str(spot))
-                else:
-                    print('Er ging iets mis met inchecken')
 
-            time.sleep(1)
-
-        else:
-            register(ov)
+# OV SCAN
+scan_ov()
