@@ -1,10 +1,9 @@
 from tkinter import *
 
 def toonLoginFrame():
+    toonMainMenu.pack_forget()
     hoofdframe.pack_forget()
     loginframe.pack()
-
-
 
 def toonHoofdFrame():
     loginframe.pack_forget()
@@ -14,11 +13,8 @@ def toonHoofdFrame():
 def toonMainMenu():
     hoofdframe.pack_forget()
     toonMainMenu.pack()
-    label3 = Label(master=toonMainMenu, text='scherm3', background='yellow')
-    label3.pack()
-
-
-
+    #label3 = Label(master=toonMainMenu, text='scherm3', background='yellow')
+    #label3.pack()
 
 
 
@@ -44,12 +40,12 @@ label = Label(master=hoofdframe, text='scherm2', background='yellow')
 label.pack()
 
 
-
 toonMainMenu = Frame(master=root)
-toonMainMenu.pack()
+hoofdframe.pack( expand=True)
 backbutton2 = Button(master=toonMainMenu, text='terug naar scherm 1', command=toonLoginFrame)
 backbutton2.pack(padx=20, pady=20)
-
+label3 = Label(master=toonMainMenu, text='scherm3', background='yellow')
+label3.pack()
 
 toonLoginFrame()
 root.mainloop()
