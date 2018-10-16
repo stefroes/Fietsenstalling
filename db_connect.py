@@ -5,7 +5,7 @@ import mysql.connector
 
 try:
     db = mysql.connector.connect(
-        host='37.97.240.38',
+        host='db4free.net',
         user='fietsen_user',
         password='QYm6Pt3Cv4cDNynT',
         database='fietsenstalling',
