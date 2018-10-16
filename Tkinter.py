@@ -21,6 +21,8 @@ def toonMainMenu():
 
 
 root = Tk()
+root.title("NS-fietsenstalling")
+root.geometry('400x400')
 
 # scherm 1
 
@@ -35,6 +37,9 @@ hoofdframe = Frame(master=root)
 hoofdframe.pack(expand=True)
 backbutton = Button(master=hoofdframe, text='volgend scherm', command=toonMainMenu)
 backbutton.pack(padx=20, pady=20)
+terugNaarHoofdScherm = Button(master=hoofdframe, text='Terug naar scherm 1', command=toonMainMenu)
+terugNaarHoofdScherm.pack(padx=20, pady=20)
+
 
 # scherm 3
 
