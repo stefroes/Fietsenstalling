@@ -79,6 +79,8 @@ def register(ov):
     db.commit()
     cursor.close()
 
+    # STUUR MAIL MET CODE NAAR EMAIL
+
     scan_ov(ov)
 
 
@@ -151,6 +153,16 @@ def scan_ov(static_ov=False):
 
                 # INCHECKEN > UITCHECKEN
                 if cursor.rowcount > 0:
+
+                    # CHECK IF VALID CODE
+                    while True:
+                        code = input('Vul uw code in: ').capitalize()
+                        cursor = db.cursor()
+                        cursor.execute('SELECT userID FROM user WHERE unique_code = %s AND userID = %s', (code, userID))
+
+                        if cursor.rowcount > 0:
+                            db.close()
+                            break
 
                     spot = cursor.fetchall()[0][0]
 
