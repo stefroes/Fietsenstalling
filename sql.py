@@ -16,7 +16,7 @@ db = db_connect.db
 
 
 # --- INLOGGEN OP DATABASE
-# https://roeswebdesign.nl:8443/domains/databases/phpMyAdmin/
+# https://www.db4free.net/phpMyAdmin/db_structure.php?server=1&db=fietsenstalling
 # username: fietsen_user
 # password: QYm6Pt3Cv4cDNynT
 

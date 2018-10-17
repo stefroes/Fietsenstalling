@@ -50,7 +50,7 @@ root = Tk()
 hoofdframe = Frame(master=root)
 hoofdframe.pack(side=TOP, fill="both", expand=True)
 
-loginbutton = Button(master=hoofdframe, text='login', command=toonScherm)
+loginbutton = Button(master=hoofdframe, text='Algemene informatie', command=toonScherm)
 loginbutton.pack(padx=20, pady=20)
 
 infoframe = Frame(master=root)
@@ -60,29 +60,44 @@ columnNames = ["ID", "Fiets Code", "Voornaam", "Tussenvoegsel", "Achternaam", "P
                "OV-nummer", "Datum van aanmaken"]
 
 labelPersoonlijk = Label(master=hoofdframe, width=50, font='Helvetica 18 bold',
-                         text='Dit is wat persoonlijke informatie:\n')
+                         text='Dit is wat persoonlijke informatie:')
 labelPersoonlijk.pack()
 for item in data:
     numberColumn = 0
     for entry in item:
+        # labelHeader = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
+        #                     text="{}:\t {}".format(columnNames[numberColumn], data[0][numberColumn]))
+
         labelHeader = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
-                            text="{}:\t\t\t {}".format(columnNames[numberColumn], data[0][numberColumn]))
+                            text="{}:".format(columnNames[numberColumn]))
+
+        labelHeader1 = Label(master=hoofdframe, width=100, font='Helvetica 10',
+                             text="{}".format(data[0][numberColumn]))
 
         labelHeader.pack()
+        labelHeader1.pack()
         numberColumn += 1
 
     labelCheckDate = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
-                           text="Incheck datum:\t\t\t {}".format(values[0][2]))
+                           text="Incheck datum:")
+    labelCheckDate1 = Label(master=hoofdframe, width=100, font='Helvetica 10',
+                            text=values[0][2])
     labelSpot = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
-                      text="Parkeerplaats:\t\t\t {}".format(values[0][3]))
+                      text="Parkeerplaats:")
+    labelSpot1 = Label(master=hoofdframe, width=100, font='Helvetica 10',
+                       text=values[0][3])
     labelCheckDate.pack()
+    labelCheckDate1.pack()
     labelSpot.pack()
+    labelSpot1.pack()
 
     labelFill = Label(master=hoofdframe, text='\n')
     labelFill.pack()
 
-# cursor.description[numberColumn][0]
-labelAlgemeen = Label(master=infoframe, width=50, font='Helvetica 18 bold', text='Dit is wat algemene informatie:\n')
+backbutton = Button(master=infoframe, text='Persoonlijke informatie', command=toonHoofdFrame)
+backbutton.pack(padx=20, pady=20)
+
+labelAlgemeen = Label(master=infoframe, width=50, font='Helvetica 18 bold', text='Dit is wat algemene informatie:')
 labelAlgemeen.pack()
 
 label = Label(master=infoframe, text=''
@@ -91,8 +106,6 @@ label = Label(master=infoframe, text=''
                                      'hallo\n'
                                      '')
 label.pack()
-backbutton = Button(master=infoframe, text='Terug', command=toonHoofdFrame)
-backbutton.pack(padx=20, pady=20)
 
 toonHoofdFrame()
 root.mainloop()
