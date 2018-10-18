@@ -1,5 +1,8 @@
 from tkinter import *
+from tkinter import messagebox
 import db_connect
+import re
+
 
 def login():
     login.grid()
@@ -74,8 +77,61 @@ def enter():
 def printIt():
     print('Kan ff niet nu')
 
+# callback functies om te checken of input klopt
+def callback_zip():
+    zip = var4.get()
+    if len(zip) != 6:
+        messagebox.showerror("Error", "Vul een geldig postcode in.")
+    else:
+        print(var4.get())
+
+def callback_huisnummer():
+    housenumber = var5.get()
+    if len(housenumber) != 2:
+        messagebox.showerror("Error", "Vul een geldig huisnummer in.")
+    else:
+        print(var5.get())
+
+def callback_email():
+    email = var6.get()
+    if re.search(r"[@]", email) is None:
+        messagebox.showerror("Error", "Je email mist een '@'.")
+    elif re.search(r"[.]", email) is None:
+        messagebox.showerror("Error", "Je email mist een '.'.")
+    else:
+        print(var6.get())
+
 Button(gui, width=15, text="Inloggen" , highlightbackground=blauw, bg=blauw, command=printIt).grid(row=6, column=0)
 Button(gui, width=15, text="Registreren" ,highlightbackground=blauw, bg=blauw, command=enter).grid(row=6, column=1)
-
+a = Button(gui, width=15, text="Zip" , highlightbackground=blauw, bg=blauw, command=callback_zip).grid(row=6, column=2)
+b = Button(gui, width=15, text="Huisnummer" , highlightbackground=blauw, bg=blauw, command=callback_huisnummer).grid(row=6, column=3)
+c = Button(gui, width=15, text="Email" , highlightbackground=blauw, bg=blauw, command=callback_email).grid(row=6, column=4)
 
 gui.mainloop()
+
+# error functie
+# import tkinter
+# from tkinter import *
+# from tkinter import messagebox
+#
+# # hide main window
+# root = tkinter.Tk()
+# # root.withdraw()
+#
+# v = StringVar()
+# e = Entry(root, textvariable=v)
+# e.pack()
+#
+# e.focus_set()
+#
+# def callback():
+#     invoer = v.get()
+#     if invoer != 'hoi':
+#         messagebox.showerror("Error", "Is geen int.")
+#     else:
+#         print(e.get())
+#
+# b = Button(root, text="get", width=10, command=callback)
+# b.pack()
+#
+# mainloop()
