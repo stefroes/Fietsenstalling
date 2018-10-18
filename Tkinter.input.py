@@ -3,6 +3,11 @@ import db_connect
 
 blauw = '#003373'
 geel = '#ffac00'
+def login():
+    login.grid()
+
+blauw = '#013174'
+geel = '#F4C03D'
 
 gui = Tk()
 gui.attributes('-fullscreen', True)
@@ -21,22 +26,24 @@ var5 = StringVar()
 var6 = StringVar()
 
 login = Frame(master=gui)
-Label(gui, width=15, text="Voornaam: ", bg=geel).grid(row=0, column=0)
+Label(gui, width=15, text="Voornaam: ", bg=geel, fg=blauw).grid(row=0, column=0)
 first_name_entry = Entry(gui, width=29, textvariable=var1).grid(row=0, column=1)
 
-Label(gui, width=15, text="Tussenvoegsels: ", bg=geel).grid(row=1, column=0)
+Label(gui, width=15, text="Tussenvoegsels: ", bg=geel, fg=blauw).grid(row=1, column=0)
 insertion_entry = Entry(gui, width=29, textvariable=var2).grid(row=1, column=1)
 
-Label(gui, width=15, text="Achternaam: ", bg=geel).grid(row=2, column=0)
+Label(gui, width=15, text="Achternaam: ", bg=geel, fg=blauw).grid(row=2, column=0)
 last_name_entry = Entry(gui, width=29, textvariable=var3).grid(row=2, column=1)
 
 Label(gui, width=15, text="Postcode: ", bg=geel).grid(row=3, column=0)
 zip_entry = Entry(gui, width=29, textvariable=var4).grid(row=3, column=1)
+Label(gui, width=15, text="Postcode: ", bg=geel, fg=blauw).grid(row=3, column=0)
+zip_entry= Entry(gui, width=29, textvariable=var4).grid(row=3, column=1)
 
-Label(gui, width=15, text="Huisnummer: ", bg=geel).grid(row=4, column=0)
+Label(gui, width=15, text="Huisnummer: ", bg=geel, fg=blauw).grid(row=4, column=0)
 housenumber_entry = Entry(gui, width=29, textvariable=var5).grid(row=4, column=1)
 
-Label(gui, width=15, text="Email: ", bg=geel).grid(row=5, column=0)
+Label(gui, width=15, text="Email: ", bg=geel, fg=blauw).grid(row=5, column=0)
 email_entry = Entry(gui, width=29, textvariable=var6).grid(row=5, column=1)
 
 
