@@ -75,7 +75,9 @@ def enter():
     print(cursor.rowcount)
 
 def printIt():
-    print('Kan ff niet nu')
+    callback_zip()
+    callback_email()
+    callback_huisnummer()
 
 # callback functies om te checken of input klopt
 def callback_zip():

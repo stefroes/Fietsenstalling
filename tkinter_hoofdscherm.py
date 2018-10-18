@@ -3,7 +3,7 @@ from tkinter import *
 #functie om naar scherm 1 te gaan
 def toonLoginFrame():
   toonMainMenu.pack_forget()
-  hoofdframe.lack_forget()
+  hoofdframe.pack_forget()
   loginframe.pack()
   photolabel.pack()
 
