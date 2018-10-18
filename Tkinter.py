@@ -29,6 +29,9 @@ loginframe = Frame(master=root)
 loginframe.pack( expand=True)
 loginbutton = Button(master=loginframe, text='Houd hier uw pas', command=toonHoofdFrame)
 loginbutton.pack(padx=20, pady=20)
+T = Text(root, height=2)
+T.pack()
+
 
 #importeren van een foto
 my_image = PhotoImage(file="beginschermfietsenstalling.png")
