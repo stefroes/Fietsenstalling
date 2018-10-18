@@ -47,64 +47,71 @@ cursor.close()
 
 root = Tk()
 
-hoofdframe = Frame(master=root)
+hoofdframe = Frame(master=root, bg='#F4C03D')
 hoofdframe.pack(side=TOP, fill="both", expand=True)
 
-loginbutton = Button(master=hoofdframe, text='Algemene informatie', command=toonScherm)
+loginbutton = Button(master=hoofdframe, bg='#F4C03D', fg='#013174', font='Helvetica 14 bold',
+                     text='Algemene informatie', command=toonScherm)
 loginbutton.pack(padx=20, pady=20)
 
-infoframe = Frame(master=root)
+infoframe = Frame(master=root, bg='#F4C03D')
 infoframe.pack(fill="both", expand=True)
 
 columnNames = ["ID", "Fiets Code", "Voornaam", "Tussenvoegsel", "Achternaam", "Postcode", "Huisnummer", "Email",
                "OV-nummer", "Datum van aanmaken"]
 
-labelPersoonlijk = Label(master=hoofdframe, width=50, font='Helvetica 18 bold',
+labelPersoonlijk = Label(master=hoofdframe, width=50, bg='#F4C03D', fg='#013174', font='Helvetica 18 bold',
                          text='Dit is wat persoonlijke informatie:')
 labelPersoonlijk.pack()
 for item in data:
-    numberColumn = 0
+    numberColumn = 2
     for entry in item:
-        # labelHeader = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
-        #                     text="{}:\t {}".format(columnNames[numberColumn], data[0][numberColumn]))
+        while numberColumn < 8:
+            if data[0][numberColumn] == None:
+                numberColumn += 1
+            else:
+                # labelHeader = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
+                #                     text="{}:\t {}".format(columnNames[numberColumn], data[0][numberColumn]))
 
-        labelHeader = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
-                            text="{}:".format(columnNames[numberColumn]))
+                labelHeader = Label(master=hoofdframe, bg='#F4C03D', fg='#013174', font='Helvetica 14 bold',
+                                    text="{}:".format(columnNames[numberColumn]))
 
-        labelHeader1 = Label(master=hoofdframe, width=100, font='Helvetica 10',
-                             text="{}".format(data[0][numberColumn]))
+                labelHeader1 = Label(master=hoofdframe, bg='#F4C03D', fg='#013174', font='Helvetica 12',
+                                     text="{}".format(data[0][numberColumn]))
 
-        labelHeader.pack()
-        labelHeader1.pack()
-        numberColumn += 1
+                labelHeader.pack()
+                labelHeader1.pack()
+                numberColumn += 1
 
-    labelCheckDate = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
+    labelCheckDate = Label(master=hoofdframe, bg='#F4C03D', fg='#013174', font='Helvetica 14 bold',
                            text="Incheck datum:")
-    labelCheckDate1 = Label(master=hoofdframe, width=100, font='Helvetica 10',
+    labelCheckDate1 = Label(master=hoofdframe, bg='#F4C03D', fg='#013174', font='Helvetica 12',
                             text=values[0][2])
-    labelSpot = Label(master=hoofdframe, width=100, font='Helvetica 10 bold',
+    labelSpot = Label(master=hoofdframe, bg='#F4C03D', fg='#013174', font='Helvetica 14 bold',
                       text="Parkeerplaats:")
-    labelSpot1 = Label(master=hoofdframe, width=100, font='Helvetica 10',
+    labelSpot1 = Label(master=hoofdframe, bg='#F4C03D', fg='#013174', font='Helvetica 12',
                        text=values[0][3])
     labelCheckDate.pack()
     labelCheckDate1.pack()
     labelSpot.pack()
     labelSpot1.pack()
 
-    labelFill = Label(master=hoofdframe, text='\n')
+    labelFill = Label(master=hoofdframe, bg='#F4C03D', fg='#013174', text='\n')
     labelFill.pack()
 
-backbutton = Button(master=infoframe, text='Persoonlijke informatie', command=toonHoofdFrame)
+backbutton = Button(master=infoframe, bg='#F4C03D', fg='#013174', font='Helvetica 14 bold',
+                    text='Persoonlijke informatie', command=toonHoofdFrame)
 backbutton.pack(padx=20, pady=20)
 
-labelAlgemeen = Label(master=infoframe, width=50, font='Helvetica 18 bold', text='Dit is wat algemene informatie:')
+labelAlgemeen = Label(master=infoframe, width=50, bg='#F4C03D', fg='#013174', font='Helvetica 18 bold',
+                      text='Dit is wat algemene informatie:')
 labelAlgemeen.pack()
 
-label = Label(master=infoframe, text=''
-                                     'Je moet je fiets parkeren\n'
-                                     'Je moet inchecken en uitchecken\n'
-                                     'hallo\n'
-                                     '')
+label = Label(master=infoframe, bg='#F4C03D', fg='#013174', font='Helvetica 12 bold', text=''
+                                                                                           'Je moet je fiets parkeren\n'
+                                                                                           'Je moet inchecken en uitchecken\n'
+                                                                                           'hallo\n'
+                                                                                           '')
 label.pack()
 
 toonHoofdFrame()
