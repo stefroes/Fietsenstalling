@@ -322,13 +322,13 @@ class MFRC522:
 
         # Now we need to append the authKey which usually is 6 bytes of 0xFF
         i = 0
-        while (i < len(Sectorkey)):
+        while i < len(Sectorkey):
             buff.append(Sectorkey[i])
             i = i + 1
         i = 0
 
         # Next we append the first 4 bytes of the UID
-        while (i < 4):
+        while i < 4:
             buff.append(serNum[i])
             i = i + 1
 
@@ -372,8 +372,7 @@ class MFRC522:
         if not (status == self.MI_OK) or not (backLen == 4) or not ((backData[0] & 0x0F) == 0x0A):
             status = self.MI_ERR
 
-        print
-        "%s backdata &0x0F == 0x0A %s" % (backLen, backData[0] & 0x0F)
+        print("%s backdata &0x0F == 0x0A %s" % (backLen, backData[0] & 0x0F))
         if status == self.MI_OK:
             i = 0
             buf = []
@@ -403,7 +402,7 @@ class MFRC522:
     def MFRC522_Init(self):
         GPIO.output(self.NRSTPD, 1)
 
-        self.MFRC522_Reset();
+        self.MFRC522_Reset()
 
         self.Write_MFRC522(self.TModeReg, 0x8D)
         self.Write_MFRC522(self.TPrescalerReg, 0x3E)

@@ -20,11 +20,19 @@ scanning = True
 
 # FUNCTIONS
 def valid_email():
-    """Check if is valid E-mail"""
+    """Check if is valid e-mail"""
+    # cursor = db.cursor()
+
     while True:
         string = input('E-mail: ').lower()
+
+        # DIT KUT DING WERKT NIET GOED, GEEN FK IDEE WAAROM:
+        # cursor.execute('SELECT count(userID) FROM `user` WHERE email = %s', string)
+
         if re.search('[@]', string) is None and len(string) > 5 and re.search('[.]', string) is None:
             print('Voer een geldig email adres in.')
+        # elif cursor.fetchone()[0] > 0:
+        #    print('Dit e-mail adres is al geregistreerd. Gebruik een andere pas of gebruik een ander e-mail adres.')
         else:
             return string
 
@@ -65,23 +73,24 @@ def get_code():
 
 def register(ov):
     """Register a new user"""
-    email = valid_email()
-    date = get_date()
-    code = get_code()
+    while True:
+        email = valid_email()
+        date = get_date()
+        code = get_code()
 
-    first_name = input('Voornaam: ').capitalize()
-    last_name = input('Achternaam: ').capitalize()
-    zip_code = input('Postcode: ').upper().replace(' ', '')
-    house_number = input('Huisnummer: ').capitalize()
+        first_name = input('Voornaam: ').capitalize()
+        last_name = input('Achternaam: ').capitalize()
+        zip_code = input('Postcode: ').upper().replace(' ', '')
+        house_number = input('Huisnummer: ').capitalize()
 
-    cursor = db.cursor()
-    cursor.execute('INSERT INTO user (unique_code, first_name, last_name, zip, streetnumber, email, ov, date_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (code, first_name, last_name, zip_code, house_number, email, ov, date))
-    db.commit()
-    cursor.close()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO user (unique_code, first_name, last_name, zip, streetnumber, email, ov, date_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (code, first_name, last_name, zip_code, house_number, email, ov, date))
+        db.commit()
+        cursor.close()
 
-    # STUUR MAIL MET CODE NAAR EMAIL
+        # STUUR MAIL MET CODE NAAR EMAIL
 
-    scan_ov(ov)
+        scan_ov(ov)
 
 
 def get_free_spot():
@@ -97,6 +106,7 @@ def get_free_spot():
         if free not in spots:
             return free
 
+    print('Alle plekken zijn bezet. Wacht totdat er iemand een plek vrijmaakt.')
     return False
 
 
@@ -111,7 +121,7 @@ def scan_ov(static_ov=False):
     """Check-in and check-out based on chipcard"""
     global scanning
 
-    print("SCANNING: ")
+    print('SCANNING: ')
 
     while scanning:
 
@@ -140,36 +150,38 @@ def scan_ov(static_ov=False):
 
             cursor = db.cursor()
             cursor.execute('SELECT userID FROM user WHERE ov = %s', (ov,))
-            userID = cursor.fetchall()
+            user_id = cursor.fetchall()
 
             found = cursor.rowcount
             cursor.close()
 
             # USER EXSIST
             if found > 0:
-                userID = userID[0][0]
+                user_id = user_id[0][0]
                 cursor = db.cursor()
-                cursor.execute('SELECT spot FROM interaction WHERE userID = %s', (userID,))
+                cursor.execute('SELECT spot FROM interaction WHERE userID = %s', (user_id,))
 
                 # INCHECKEN > UITCHECKEN
                 if cursor.rowcount > 0:
 
                     # CHECK IF VALID CODE
+                    check = db.cursor()
                     while True:
                         code = input('Vul uw code in: ').capitalize()
-                        cursor = db.cursor()
-                        cursor.execute('SELECT userID FROM user WHERE unique_code = %s AND userID = %s', (code, userID))
 
-                        if cursor.rowcount > 0:
-                            db.close()
+                        check.execute('SELECT userID FROM user WHERE unique_code = %s AND userID = %s', (code, user_id))
+
+                        if check.rowcount > 0:
+                            print('CODE CORRECT')
                             break
+                        else:
+                            print('FOUTE CODE, PROBEER OPNIEUW')
 
                     spot = cursor.fetchall()[0][0]
 
                     cursor = db.cursor()
-                    cursor.execute('DELETE FROM interaction WHERE userID = %s', (userID,))
+                    cursor.execute('DELETE FROM interaction WHERE userID = %s', (user_id,))
                     db.commit()
-                    print(cursor.rowcount)
 
                     if cursor.rowcount:
                         print('U bent UITGECHECKT op spot #' + str(spot))
@@ -182,7 +194,7 @@ def scan_ov(static_ov=False):
                     # UITCHECKEN > INCHECKEN
                     cursor = db.cursor()
                     spot = get_free_spot()
-                    cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (userID, get_date(), spot))
+                    cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (user_id, get_date(), spot))
                     db.commit()
 
                     if cursor.rowcount:
@@ -195,6 +207,8 @@ def scan_ov(static_ov=False):
                 cursor.close()
 
                 time.sleep(1)
+
+                print('SCANNING: ')
 
             else:
                 register(ov)
