@@ -87,7 +87,7 @@ def callback_zip():
 
 def callback_huisnummer():
     housenumber = var5.get()
-    if len(housenumber) != 2:
+    if len(housenumber) > 3 :
         messagebox.showerror("Error", "Vul een geldig huisnummer in.")
     else:
         print(var5.get())
