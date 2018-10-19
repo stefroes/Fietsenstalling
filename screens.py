@@ -8,7 +8,7 @@ white = '#FFFFFF'
 blue = '#013174'
 yellow = '#F4C03D'
 high_dpi = True
-fullscreen = True
+fullscreen = False
 
 
 class MainScreen:
@@ -89,7 +89,8 @@ def main():
 
     if high_dpi:
         root.call('tk', 'scaling', 4)
-    root.attributes('-fullscreen', True)
+    if fullscreen:
+        root.attributes('-fullscreen', True)
     root.geometry('900x700')
     root.configure(bg=yellow)
     root.title('NS Fietsenstalling')
