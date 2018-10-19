@@ -11,7 +11,7 @@ blauw = '#013174'
 geel = '#F4C03D'
 
 gui = Tk()
-gui.geometry("700x650")
+gui.geometry("700x250")
 gui.configure(bg=geel)
 
 
