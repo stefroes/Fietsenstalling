@@ -1,9 +1,21 @@
-import hashlib
+from Crypto.Cipher import AES
+import base64
 
 
-def compute_md5_hash(my_string, dateandtime):
-    """Maak een MD5 hash van de input."""
-    m = hashlib.md5()
-    # Maak een MD5 hash van de code van de gebruiker en de huidige tijd.
-    m.update(my_string.encode('utf-8') + str(dateandtime).encode('utf-8'))
-    return m.hexdigest()
+def get_key():
+    return '2qGZdeEHpbTiwFDkKvqC'
+
+
+def encrypt(string):
+    cipher = AES.new(get_key(), AES.MODE_ECB)
+    return base64.b64encode(cipher.encrypt(string.rjust(32)))
+
+
+def decrypt(string):
+    cipher = AES.new(get_key(), AES.MODE_ECB)
+    decoded = cipher.decrypt(base64.b64decode(string))
+    return decoded.strip()
+
+
+encrypted = encrypt('test')
+

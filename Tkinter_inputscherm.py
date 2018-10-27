@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
 import db_connect
-<<<<<<< HEAD:Tkinter.input.py
 from general.general import *
 
 # GLOBALS
@@ -11,7 +10,6 @@ blue = '#013174'
 yellow = '#F4C03D'
 high_dpi = True
 fullscreen = True
-=======
 import re
 
 
@@ -24,7 +22,7 @@ geel = '#F4C03D'
 gui = Tk()
 gui.geometry("700x250")
 gui.configure(bg=geel)
->>>>>>> origin/master:Tkinter_inputscherm.py
+
 
 
 class MainScreen:
