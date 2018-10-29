@@ -4,6 +4,10 @@ import random
 import string
 import time
 
+# REMOVE INTERNAL SQL CONNECTOR
+# REMOVE PRINTS
+# CLEANUP
+
 try:
     db = mysql.connector.connect(
         host='db4free.net',
@@ -157,7 +161,6 @@ class User:
         else:
             self.check_in()
 
-        # time.sleep(1)
         print('SCAN')
 
     def register(self, first_name, insertion, last_name, zip_code, streetnumber, email):

@@ -5,12 +5,11 @@ import db_connect
 from classes.user import User
 import re
 import time
-import asyncio
 
 # CHECK IF IS RASPBERRY OR PC
 emulator = False
 try:
-    from MFRC522 import MFRC522
+    from lib import MFRC522
     import RPi.GPIO as GPIO
     import signal
 
@@ -138,7 +137,6 @@ class InfoScreen:
             self.title.config(font=('Open Sans', 30))
             self.title.pack(pady=(100, 50))
 
-
             print('INGECHECKT')
 
             self.disappear()
@@ -178,10 +176,8 @@ class InfoScreen:
             messagebox.showerror('Uitchecken mislukt', 'Sorry ' + self.user.get_first_name() + ', probeer opnieuw uit te checken.')
 
     async def disappear(self):
-        await asyncio.sleep(1)
-        print('zaad')
-        #time.sleep(3)
-        #self.frame.destroy()
+        # time.sleep(3)
+        # self.frame.destroy()
         MainScreen(self.master)
 
 
