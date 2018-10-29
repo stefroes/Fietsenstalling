@@ -105,7 +105,7 @@ class User:
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
     def check_in(self):
-        # UITCHECKEN > INCHECKEN
+        """Check the user in to the database"""
         cursor = db.cursor()
         spot = self.get_free_spot()
         cursor.execute('INSERT INTO interaction (userID, date, spot) VALUES (%s, %s, %s)', (self.get_user_id(), self.get_current_date(), spot))
@@ -119,7 +119,7 @@ class User:
             # print('Er ging iets mis met inchecken')
 
     def check_out(self, code):
-        # INCHECKEN > UITCHECKEN
+        """Check the user out to the database"""
         cursor = db.cursor()
         cursor.execute('SELECT spot FROM interaction WHERE userID = %s', (self.get_user_id(),))
 
