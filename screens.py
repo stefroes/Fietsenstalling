@@ -5,6 +5,7 @@ import db_connect
 from classes.user import User
 import re
 import time
+import _thread
 
 # CHECK IF IS RASPBERRY OR PC
 emulator = False
@@ -139,7 +140,7 @@ class InfoScreen:
 
             print('INGECHECKT')
 
-            self.disappear()
+            _thread.start_new_thread(self.disappear, ())
         else:
             messagebox.showerror('Inchecken mislukt', 'Incorrecte code')
 
@@ -171,13 +172,20 @@ class InfoScreen:
             self.title.config(font=('Open Sans', 30))
             self.title.pack(pady=(100, 50))
 
-            self.disappear()
+            _thread.start_new_thread(self.disappear, ())
         else:
             messagebox.showerror('Uitchecken mislukt', 'Sorry ' + self.user.get_first_name() + ', probeer opnieuw uit te checken.')
 
-    async def disappear(self):
-        # time.sleep(3)
-        # self.frame.destroy()
+    def disappear(self):
+        countdown = 3
+        print('REMAIN FOR 3 SECONDS')
+        while countdown >= 0:
+            print(countdown, end='...')
+            time.sleep(1)
+            countdown -= 1
+        print('END\n')
+
+        self.frame.destroy()
         MainScreen(self.master)
 
 
