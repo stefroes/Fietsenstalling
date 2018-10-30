@@ -45,36 +45,50 @@ class User:
             self.valid = False
 
     def get_user_id(self):
+        """Get user ID"""
         return self.user_id
 
     def get_code(self):
+        """Get user code"""
         return self.code
 
     def get_first_name(self):
+        """Get user firstname"""
         return self.first_name
 
     def get_last_name(self):
+        """Get user lastname"""
         return self.last_name
 
     def get_full_name(self):
+        """Get user full name"""
         if self.insertion:
             return self.first_name + ' ' + self.insertion + ' ' + self.last_name
         else:
             return self.first_name + ' ' + self.last_name
 
     def get_zip(self):
+        """Get zip code of user"""
         return self.zip[:4] + ' ' + self.zip[4:6]
 
     def get_streetnumber(self):
+        """Get streetnumber of user"""
         return self.streetnumber
 
     def get_email(self):
+        """Get user email"""
         return self.email
 
     def get_ov(self):
+        """Get user OV serial key"""
         return self.ov
 
+    def get_registered(self):
+        """Get user registered date"""
+        return self.registered.strftime('%d %B %Y')
+
     def is_registered(self):
+        """Check if is valid user"""
         return self.valid
 
     @staticmethod
@@ -113,28 +127,23 @@ class User:
 
         if cursor.rowcount:
             return spot
-            # print('U bent INGECHECKT op spot #' + str(spot))
         else:
             return False
-            # print('Er ging iets mis met inchecken')
 
     def check_out(self, code):
-        """Check the user out to the database"""
+        """Check the user out to the databyase"""
         cursor = db.cursor()
         cursor.execute('SELECT spot FROM interaction WHERE userID = %s', (self.get_user_id(),))
 
         if cursor.rowcount > 0:
-            # CHECK IF VALID CODE
             check = db.cursor()
             while True:
-                # code = input('Vul uw code in: ').capitalize()
                 check.execute('SELECT userID FROM user WHERE code = %s AND userID = %s', (code, self.get_user_id()))
 
                 if check.rowcount > 0:
                     break
                 else:
                     return False
-                    # print('FOUTE CODE, PROBEER OPNIEUW')
 
             spot = cursor.fetchone()[0]
 
@@ -144,26 +153,26 @@ class User:
 
             if cursor.rowcount:
                 return spot
-                # print('U bent UITGECHECKT op spot #' + str(spot))
             else:
                 print('Er ging iets mis met uitchecken')
 
             cursor.close()
 
     def is_checked_in(self):
+        """Check is user is checked in"""
         cursor = db.cursor()
         cursor.execute('SELECT spot FROM interaction WHERE userID = %s', (self.get_user_id(),))
         return cursor.rowcount > 0
 
     def scan(self, code=False):
+        """Trigger user OV scan"""
         if self.is_checked_in():
             self.check_out(code)
         else:
             self.check_in()
 
-        print('SCAN')
-
     def register(self, first_name, insertion, last_name, zip_code, streetnumber, email):
+        """Register a new user"""
         code = self.generate_code()
 
         # EMAIL DIT NAAR DE USER ^
