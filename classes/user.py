@@ -3,22 +3,13 @@ import datetime
 import random
 import string
 import time
+import connect
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 
-# REMOVE INTERNAL SQL CONNECTOR
-# REMOVE PRINTS
-# CLEANUP
-
-try:
-    db = mysql.connector.connect(
-        host='db4free.net',
-        user='fietsen_user',
-        password='QYm6Pt3Cv4cDNynT',
-        database='fietsenstalling',
-        buffered=True,
-        raise_on_warnings=True
-    )
-except mysql.connector.Error as err:
-    print("Something went wrong: {}".format(err))
+# GLOBALS
+db = connect.db
 
 
 class User:
@@ -105,7 +96,6 @@ class User:
             if free not in spots:
                 return free
 
-        print('Alle plekken zijn bezet. Wacht totdat er iemand een plek vrijmaakt.')
         return False
 
     @staticmethod
@@ -154,9 +144,7 @@ class User:
             if cursor.rowcount:
                 return spot
             else:
-                print('Er ging iets mis met uitchecken')
-
-            cursor.close()
+                return False
 
     def is_checked_in(self):
         """Check is user is checked in"""
@@ -175,10 +163,42 @@ class User:
         """Register a new user"""
         code = self.generate_code()
 
-        # EMAIL DIT NAAR DE USER ^
-
         cursor = db.cursor()
         cursor.execute('INSERT INTO user(first_name, insertion, last_name, zip, streetnumber, email, ov, code, registered) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)',
                        (first_name, insertion, last_name, zip_code, streetnumber, email, self.ov, code, self.get_current_date()))
         db.commit()
+
+        self.first_name = first_name
+        self.insertion = insertion
+        self.last_name = last_name
+        self.send_mail(self.get_full_name(), email, code)
+
         return cursor.rowcount == 1
+
+    @staticmethod
+    def send_mail(name, to, code):
+        """Send mail with code to registered user"""
+        msg = MIMEMultipart()
+
+        message = 'Beste {},<br><br>' \
+                  'Bedankt voor het gebruiken van onze fietsenstalling.<br>' \
+                  'Hier is uw fiets code: <br>' \
+                  '<h1>{}</h1>' \
+                  'Deze code heeft u nodig om uw fiets uit te checken, bewaar deze code daarom goed! <br>' \
+                  '<br>' \
+                  'Met vriendelijke groeten, <br><br>' \
+                  'NS Fietsenstalling'.format(name, code)
+
+        password = 'identificatiesysteem'
+        msg['From'] = 'fietsenstallingv1a@gmail.com'
+        msg['To'] = to
+        msg['Subject'] = 'NS Fietsenstalling Code {}'.format(code)
+
+        msg.attach(MIMEText(message, 'HTML'))
+
+        server = smtplib.SMTP('smtp.gmail.com: 587')
+        server.starttls()
+        server.login(msg['From'], password)
+        server.sendmail(msg['From'], msg['To'], msg.as_string())
+
+        server.quit()

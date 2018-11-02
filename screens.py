@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import ttk as ttk
 from tkinter import messagebox
 from tkinter.font import Font
-import db_connect
+import connect
+import functions
 from classes.user import User
 import re
 import time
@@ -24,29 +25,16 @@ except ImportError:
     simulation_ov = '48:127:217:164'
 
 # GLOBALS
-db = db_connect.db
+db = connect.db
 white = '#FFFFFF'
 blue = '#013174'
 yellow = '#F4C03D'
-high_dpi = False
+high_dpi = functions.is_high_resolution()
 fullscreen = True
 
 
-def clean(string, capitalize=True, remove_spaces=True, lowercase=False, uppercase=False):
-    """Format a string for clean output"""
-    if capitalize:
-        string = string.capitalize()
-    elif lowercase:
-        string = string.lower()
-    elif uppercase:
-        string = string.upper()
-    if remove_spaces:
-        string = string.replace(' ', '')
-
-    return string
-
-
 class MainScreen:
+    """Main screen class"""
     def __init__(self, master, user=None):
         self.master = master
         self.frame = Frame(self.master, bg=yellow)
@@ -56,7 +44,12 @@ class MainScreen:
         self.title.config(font=('Open Sans', 30))
         self.title.pack(pady=(100, 50))
 
-        self.image = PhotoImage(file='assets/img/ov_small.png')
+        if high_dpi:
+            file = 'ov'
+        else:
+            file = 'ov_small'
+
+        self.image = PhotoImage(file='images/' + file + '.png')
         self.label = Label(self.frame, image=self.image, bg=yellow)
         self.label.pack(pady=50)
 
@@ -71,10 +64,12 @@ class MainScreen:
             self.scan_submit = Button(self.frame, width=15, text='SCAN', highlightbackground=blue, bg=blue, fg=white, command=self.simulate_scan).pack()
         else:
             self.scan_label = Label(self.frame, width=100, text='Scanning...', bg=yellow, fg=blue, padx=10, pady=10).pack()
-            self.scan()
+
+            self.master.after(0, self.scan)
 
     @staticmethod
-    def end_read(signal, frame):
+    def end_read():
+        """"Cleanup GPIO pins for RFID-RC522 chip"""
         global ov_read
         ov_read = False
         GPIO.cleanup()
@@ -83,32 +78,32 @@ class MainScreen:
         """Scan OV card with RFID-RC522 chip"""
         global ov_read
 
-        reader = MFRC522()
+        if static_ov:
+            ov = static_ov
+            user = User(ov)
+            ov_read = False
 
-        while ov_read:
-            # Hook the SIGINT, # Scan for cards
+            if user.is_registered():
+                self.frame.pack_forget()
+                InfoScreen(self.master, user)
+            else:
+                self.frame.pack_forget()
+                RegisterScreen(self.master, user.get_ov())
+        else:
+            reader = MFRC522()
+
+            # Hook the SIGINT, Scan for cards
             signal.signal(signal.SIGINT, self.end_read)
 
-            (status, TagType) = reader.MFRC522_Request(reader.PICC_REQIDL)
-
-            # If a card is found
-            # if status == reader.MI_OK:
-                # print('Card detected')
+            reader.MFRC522_Request(reader.PICC_REQIDL)
 
             # Get the UID of the card
             (status, uid) = reader.MFRC522_Anticoll()
 
             # If we have the UID, continue
-            if status == reader.MI_OK or static_ov:
-
-                if static_ov:
-                    ov = static_ov
-                    static_ov = None
-                else:
-                    ov = '{}:{}:{}:{}'.format(uid[0], uid[1], uid[2], uid[3])
-
+            if status == reader.MI_OK:
+                ov = '{}:{}:{}:{}'.format(uid[0], uid[1], uid[2], uid[3])
                 user = User(ov)
-
                 ov_read = False
 
                 if user.is_registered():
@@ -117,6 +112,8 @@ class MainScreen:
                 else:
                     self.frame.pack_forget()
                     RegisterScreen(self.master, user.get_ov())
+            else:
+                self.master.after(200, self.scan)
 
     def simulate_scan(self):
         """Simulate OV card scan by entering the serial key"""
@@ -131,6 +128,7 @@ class MainScreen:
 
 
 class InfoScreen:
+    """Info screen class"""
     def __init__(self, master, user):
         self.master = master
         self.user = user
@@ -153,22 +151,22 @@ class InfoScreen:
                 self.check_in()
 
     def check_in(self):
+        """View screen for checked in user"""
         self.frame = Frame(self.master, bg=yellow)
         self.frame.pack(anchor=CENTER)
 
         spot = self.user.check_in()
         if spot:
-            self.title = Label(self.frame, width=200, text='INGECHECKT OP SPOT : ' + str(spot), bg=yellow, fg=blue)
+            self.title = Label(self.frame, width=200, text='Ingecheckt op spot:\n#' + str(spot), bg=yellow, fg=blue)
             self.title.config(font=('Open Sans', 30))
-            self.title.pack(pady=(100, 50))
-
-            print('INGECHECKT')
+            self.title.pack(pady=(25, 50))
 
             _thread.start_new_thread(self.disappear, ())
         else:
-            messagebox.showerror('Inchecken mislukt', 'Incorrecte code')
+            messagebox.showerror('Inchecken mislukt', 'Alle plekken zijn bezet. Wacht totdat er iemand een plek vrijmaakt.')
 
     def check_out(self):
+        """View screen for checked out user"""
         self.frame = Frame(self.master, bg=yellow)
         self.frame.pack(anchor=CENTER)
 
@@ -185,6 +183,7 @@ class InfoScreen:
         self.code_button.pack()
 
     def check_out_command(self):
+        """Validates user code and continues if success """
         spot = self.user.check_out(self.code_entry.get())
         if spot:
             self.title.pack_forget()
@@ -194,14 +193,16 @@ class InfoScreen:
 
             self.title = Label(self.frame, width=200, text='Uitgecheckt op spot:\n#' + str(spot), bg=yellow, fg=blue)
             self.title.config(font=('Open Sans', 30))
-            self.title.pack(pady=(100, 50))
+            self.title.pack(pady=(25, 50))
 
             _thread.start_new_thread(self.disappear, ())
         else:
             messagebox.showerror('Uitchecken mislukt', 'Sorry ' + self.user.get_first_name() + ', probeer opnieuw uit te checken.')
 
     def disappear(self, wait=True):
+        """Destroy the user views"""
         global ov_read
+
         if wait:
             self.progress = Label(self.frame, width=200, text='Dit scherm sluit in ' + str(self.timer), bg=yellow, fg=blue)
             self.progress.pack()
@@ -210,22 +211,21 @@ class InfoScreen:
             self.detail_frame.pack(anchor=CENTER)
 
             self.close_button = Button(self.frame, text='Bekijk uw profiel', width=30, command=self.show_details)
-            self.close_button.pack(pady=(150, 50))
+            self.close_button.pack(pady=(25, 50))
 
-            print('REMAIN FOR 5 SECONDS')
             while self.timer >= 0:
                 self.progress.configure(text='Dit scherm sluit in ' + str(self.timer))
-                print(self.timer, end='...')
                 time.sleep(1)
                 self.timer -= 1
-            print('END\n')
 
         self.frame.destroy()
         self.detail_frame.destroy()
+
         ov_read = True
         MainScreen(self.master)
 
     def show_details(self):
+        """Show user information when clicked"""
         self.close_button.pack_forget()
         self.timer = 11
 
@@ -233,18 +233,18 @@ class InfoScreen:
 
 
 class RegisterScreen:
-
+    """Register screen class"""
     def __init__(self, master, ov):
         self.master = master
 
-        self.frame = Frame(self.master, width=900, bg=yellow)
+        self.frame = Frame(self.master, bg=yellow)
         self.frame.pack(fill=None, expand=False)
 
         self.ov = ov
 
         self.title = Label(self.frame, width=150, text='Registeren', bg=yellow, fg=blue)
         self.title.config(font=('Open Sans', 30))
-        self.title.pack(pady=(100, 50))
+        self.title.pack(pady=(25, 25))
 
         self.first_name_label = Label(self.frame, width=15, text='Voornaam: ', bg=yellow, fg=blue, padx=10, pady=10).pack()
         self.first_name_entry = Entry(self.frame, width=30)
@@ -270,10 +270,11 @@ class RegisterScreen:
         self.email_entry = Entry(self.frame, width=30)
         self.email_entry.pack()
 
-        self.close_button = Button(self.frame, text='Annuleren', width=15, command=self.cancel).pack(padx=(50, 50))
-        self.register_button = Button(self.frame, width=15, text='Registreren', highlightbackground=blue, bg=blue, fg=white, command=self.register).pack(padx=(50, 50))
+        self.close_button = Button(self.frame, text='Annuleren', width=15, command=self.cancel).pack(pady=(10, 10))
+        self.register_button = Button(self.frame, width=15, text='Registreren', highlightbackground=blue, bg=blue, fg=white, command=self.register).pack()
 
     def register(self):
+        """Get, validate and convert user input data"""
         first_name = self.first_name_entry.get()
         insertion = self.insertion_entry.get()
         last_name = self.last_name_entry.get()
@@ -281,17 +282,14 @@ class RegisterScreen:
         streetnumber = self.streetnumber_entry.get()
         email = self.email_entry.get()
 
-        # VALIDATE INPUT
+        # Validate input
         if self.is_valid(first_name, last_name, zip_code, streetnumber, email):
-            print('VALID')
             d = self.convert(first_name, insertion, last_name, zip_code, streetnumber, email)
 
             check = User(self.ov).register(d['first_name'], d['insertion'], d['last_name'], d['zip_code'], d['streetnumber'], d['email'])
 
             if check:
                 user = User(self.ov)
-
-                print('REGISTER SUCCESS')
 
                 self.frame.pack_forget()
                 MainScreen(self.master, user)
@@ -325,20 +323,22 @@ class RegisterScreen:
     def convert(first_name, insertion, last_name, zip_code, streetnumber, email):
         """Convert user input to clean strings"""
         return {
-            'first_name': clean(first_name),
-            'insertion': clean(insertion, False, False, True),
-            'last_name': clean(last_name),
-            'zip_code': clean(zip_code, False, uppercase=True),
-            'streetnumber': clean(streetnumber, False, uppercase=True),
-            'email': clean(email, False, lowercase=True)
+            'first_name': functions.clean(first_name),
+            'insertion': functions.clean(insertion, False, False, True),
+            'last_name': functions.clean(last_name),
+            'zip_code': functions.clean(zip_code, False, uppercase=True),
+            'streetnumber': functions.clean(streetnumber, False, uppercase=True),
+            'email': functions.clean(email, False, lowercase=True)
         }
 
     def cancel(self):
+        """Cancel register process and return to the main screen"""
         self.frame.pack_forget()
         MainScreen(self.master)
 
 
 class DetailScreen:
+    """Detail screen class"""
     def __init__(self, master, frame, user):
         self.master = master
         self.user = user
@@ -348,7 +348,7 @@ class DetailScreen:
         if self.user.is_registered():
             self.title = Label(self.frame, width=150, text='Info', bg=yellow, fg=blue)
             self.title.config(font=('Open Sans', 30))
-            self.title.pack(pady=(200, 50))
+            self.title.pack(pady=(25, 50))
 
             self.full_name_label = Label(self.frame, width=200, text='Naam: ' + self.user.get_full_name(), bg=yellow, fg=blue, padx=10, pady=10).pack()
 
@@ -362,17 +362,17 @@ class DetailScreen:
 
 
 def main():
+    """Init and start the program"""
     root = Tk()
     if high_dpi:
         root.call('tk', 'scaling', 4)
     if fullscreen:
         root.attributes('-fullscreen', True)
-    root.geometry('900x700')
     root.configure(bg=yellow)
     root.grid_columnconfigure(2, weight=1)
     root.title('NS Fietsenstalling')
 
-    main = MainScreen(root)
+    MainScreen(root)
     root.mainloop()
 
 
